@@ -19,3 +19,9 @@ To compile and run example.mc:
 ```./microc.native -l example.mc > example.out```
 
 ```/usr/local/opt/llvm/bin/lli example.out```
+
+## Resources
+
+http://www.cs.columbia.edu/~sedwards/classes/2018/4115-fall/index.html
+
+https://llvm.moe/ocaml-7.0/Llvm.html
