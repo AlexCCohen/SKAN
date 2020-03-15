@@ -4,6 +4,8 @@
 
 Install all requirements using homebrew:
 
+```brew install cmake```
+
 ```brew install llvm```
 
 ```brew install pkg-config```
