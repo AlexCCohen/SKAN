@@ -17,6 +17,7 @@ rule token = parse
 | ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
+| "mod"    { MOD }
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
