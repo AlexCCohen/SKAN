@@ -1,6 +1,6 @@
 (* Abstract Syntax Tree and functions for printing it *)
 
-type op = Add | Sub | Equal | Neq | Less | And | Or | Mod
+type op = Add | Sub | Equal | Neq | Less | And | Or
 
 type typ = Int | Bool
 
@@ -44,7 +44,6 @@ let string_of_op = function
   | Less -> "<"
   | And -> "&&"
   | Or -> "||"
-  | Mod -> "mod"
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
