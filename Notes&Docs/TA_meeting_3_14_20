@@ -1,0 +1,28 @@
+- One passs- what obvious false
+	- Static stuff
+- Inject as many layers as need
+- functional- live outside/differentiate it
+	- All functions at same level- global so everyone can see each other
+- One layer- final --> imperative
+	- After, generates actual assembly
+- Can make C calls (because of LLVM)
+- Wrappers are openGL, re-map and operator
+- 5 passes
+	- Scanner- tokens allowed
+	- Parse- match properly
+	- Semantic- light type checking
+	- Convert functional aspects- normal C-style, assembly semantics
+	- Punt everything to C
+	- Code generated in LLVM
+		- Intermediate representation
+		- At that level, can link something in C
+- Link -o files- from C, scanner, etc.
+- Punt image processing to C- link in .o files
+
+- Use microC as template
+- Keep adding new features
+- Make sure can compile microC
+- Target- print_image in a week
+- to_string for AST format- can run another target through interpreter- wrap around like calc.ml
+	- Print out what it sees
+	- In AST- write to_string function
