@@ -54,10 +54,12 @@ define i32 @main() {
 entry:
   %x = alloca i32
   %y = alloca i32
+  %z = alloca i32
   store i32 18, i32* @a
   store i32 9, i32* @b
   store i32 2, i32* %x
   store i32 14, i32* %y
+  store i32 1, i32* %z
   %y1 = load i32, i32* %y
   %x2 = load i32, i32* %x
   %gcd_result = call i32 @gcd(i32 %x2, i32 %y1)
@@ -70,5 +72,7 @@ entry:
   %a = load i32, i32* @a
   %gcd_result7 = call i32 @gcd(i32 %a, i32 %b)
   %printf8 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %gcd_result7)
+  %z9 = load i32, i32* %z
+  %printf10 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), i32 %z9)
   ret i32 0
 }
