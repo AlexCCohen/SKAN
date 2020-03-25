@@ -10,19 +10,24 @@ int gcd(int a, int b) {
   return a;
 }
 
+/* Test of mod operator */
+int mod_test(int a, int b) {
+  return a mod b;
+}
+
 int main() {
   int x;
   int y;
-  int z;
   a = 18;
   b = 9;
   x = 2;
   y = 14;
-  z = 6 mod 5;
   print(gcd(x,y));
   print(gcd(3,15));
   print(gcd(99,121));
   print(gcd(a,b));
-  print(z);
+  print(mod_test(a, b));
+  print(mod_test(5, 4));
   return 0;
 }
+
