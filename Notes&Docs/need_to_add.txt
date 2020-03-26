@@ -1,0 +1,5 @@
+- Print_image function
+- Basic operators on images (+, -, ...)
+
+- Dangling IF-ELSE (right now only supports matched if-else)
+- Float data type and operations
