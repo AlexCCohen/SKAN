@@ -1,6 +1,7 @@
 /* The GCD algorithm in MicroC */
 int a;
 int b;
+img v;
 
 int gcd(int a, int b) {
   while (a != b) {
@@ -14,6 +15,7 @@ int main() {
   int x;
   int y;
   int z;
+  int s;
   a = 18;
   b = 9;
   x = 2;

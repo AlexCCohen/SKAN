@@ -35,6 +35,7 @@ let translate (globals, functions) =
   let ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
+    |A.Img -> L.pointer_type i32_t
   in
 
   (* Create a map of global variables after creating each *)
@@ -43,6 +44,15 @@ let translate (globals, functions) =
       let init = L.const_int (ltype_of_typ t) 0
       in StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
+
+  
+ (* Built-in functions *)
+
+let read_image = L.function_type (L.pointer_type i32_t) [| L.pointer_type i8_t |] in
+let read_image_func = L.declare_function "read_image" read_image the_module in
+
+let write_image = L.function_type i32_t [| L.pointer_type i32_t; i32_t; i32_t; L.pointer_type i8_t |] in
+let write_image_func = L.declare_function "write_image" write_image the_module in
 
   let printf_t : L.lltype =
     L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in

@@ -31,6 +31,10 @@ rule token = parse
 | "return" { RETURN }
 | "int"    { INT }
 | "bool"   { BOOL }
+
+(* IMG type *)
+| "Img"    { IMG }
+
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digit+ as lem  { LITERAL(int_of_string lem) }
