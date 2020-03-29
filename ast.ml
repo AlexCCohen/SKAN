@@ -2,6 +2,7 @@
 
 type op = Add | Sub | Equal | Neq | Less | And | Or | Mod
 
+(* New Type Img *)
 type typ = Int | Bool | Img 
 
 type expr =
