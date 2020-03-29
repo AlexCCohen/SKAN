@@ -1,7 +1,7 @@
 /* The GCD algorithm in MicroC */
 int a;
 int b;
-img v;
+img pic;
 
 int gcd(int a, int b) {
   while (a != b) {
