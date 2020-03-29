@@ -1,7 +1,7 @@
 /* The GCD algorithm in MicroC */
 int a;
 int b;
-img v;
+img z;
 
 int gcd(int a, int b) {
   while (a != b) {
@@ -9,6 +9,10 @@ int gcd(int a, int b) {
     else b = b - a;
   }
   return a;
+}
+
+int mod_test(int x, int y) {
+  return x mod y;
 }
 
 int main() {
@@ -25,6 +29,8 @@ int main() {
   print(gcd(3,15));
   print(gcd(99,121));
   print(gcd(a,b));
+  print(mod_test(a, b));
+  print(4 mod 3);
   print(z);
   return 0;
 }
