@@ -8,6 +8,8 @@ type typ = Int | Bool | Img
 type expr =
     Literal of int
   | BoolLit of bool
+  (* Img *)
+  | ImgLit of string
   | Id of string
   | Binop of expr * op * expr
   | Assign of string * expr
@@ -51,6 +53,7 @@ let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
+  | ImgLit(l) -> "Image: " ^ l
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
