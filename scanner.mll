@@ -1,3 +1,5 @@
+(* TODO:
+  Add string literal (i.e. "hello")*)
 (* Ocamllex scanner for MicroC *)
 
 { open Microcparse }
@@ -33,7 +35,7 @@ rule token = parse
 | "bool"   { BOOL }
 
 (* IMG type *)
-| "Img"    { IMG }
+| "img"    { IMG }
 
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
@@ -41,6 +43,9 @@ rule token = parse
 
 (* Works for strings or images right now *)
 | letter (digit | letter | '_')* as lem { ID(lem) }
+
+| '"' ([^ '"']* as lxm) '"' { STR_LITERAL(lxm) }
+
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 

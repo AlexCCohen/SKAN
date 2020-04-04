@@ -36,7 +36,6 @@ let translate (globals, functions) =
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     |A.Img -> L.pointer_type i32_t
-
   in
 
   (* Create a map of global variables after creating each *)

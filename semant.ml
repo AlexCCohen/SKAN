@@ -1,3 +1,6 @@
+(* TODO:
+  Built-in functions (load) *)
+  (* expand "built_in_decls" for img types a d string*)
 (* Semantic checking for the MicroC compiler *)
 
 open Ast
@@ -26,6 +29,8 @@ let check (globals, functions) =
   check_binds "global" globals;
 
   (* Collect function declarations for built-in functions: no bodies *)
+  
+  (* expand for img types and string*)
   let built_in_decls =
     StringMap.add "print" {
       rtyp = Int;
@@ -70,7 +75,7 @@ let check (globals, functions) =
       match (lvaluet, rvaluet) with
       (Int, Int)-> lvaluet
       |(Bool, Bool) -> lvaluet
-      |(Img, Img) -> lvaluet
+      |(Img, String) -> lvaluet
       |_ -> raise (Failure err)
     in
 
@@ -88,7 +93,9 @@ let check (globals, functions) =
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec check_expr = function
         Literal l -> (Int, SLiteral l)
+      | StringLit l -> (String, SStringLit l)
       | BoolLit l -> (Bool, SBoolLit l)
+      | ImgLit l -> (Img, SImgLit l)
       | Id var -> (type_of_identifier var, SId var)
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var

@@ -1,15 +1,22 @@
+(*TODO:
+  Imglit and data it holds *)
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op = Add | Sub | Equal | Neq | Less | And | Or | Mod
 
 (* New Type Img *)
-type typ = Int | Bool | Img 
+type typ = Int | Bool | Img | String
 
 type expr =
     Literal of int
   | BoolLit of bool
   (* Img *)
   | ImgLit of string
+
+    (* String *)
+  | StringLit of string
+
+
   | Id of string
   | Binop of expr * op * expr
   | Assign of string * expr
@@ -54,6 +61,8 @@ let rec string_of_expr = function
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | ImgLit(l) -> "Image: " ^ l
+  | StringLit(l) -> "String: " ^ l
+
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
@@ -74,6 +83,7 @@ let string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Img -> "img"
+  | String -> "string"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 

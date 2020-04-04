@@ -15,6 +15,7 @@ open Ast
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID
+%token <string> STR_LITERAL
 %token EOF
 
 %start program
@@ -91,6 +92,7 @@ expr:
     LITERAL          { Literal($1)            }
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
+  | STR_LITERAL      { StringLit($1)          }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
   | expr MOD    expr { Binop ($1, Mod, $3)    }
