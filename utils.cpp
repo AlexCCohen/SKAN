@@ -10,24 +10,27 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-    if( argc != 2)
-    {
-     cout <<" Usage: display_image ImageToLoadAndDisplay" << endl;
-     return -1;
+    Mat img;
+    img=imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
+
+    // Convert image to vector
+    vector<uchar> array;
+    if (img.isContinuous()) {
+        array.assign(img.data, img.data + img.total());
+    }
+    else {
+        for (int i = 0; i < img.rows; ++i) {
+            array.insert(array.end(), img.ptr<uchar>(i), img.ptr<uchar>(i)+img.cols);
+        }
     }
 
-    Mat image;
-    image = imread(argv[1], CV_LOAD_IMAGE_COLOR);   // Read the file
+    // Convert vector to image
+    Mat m = Mat(img.rows, img.cols, CV_8UC1);
+    memcpy(m.data, array.data(), array.size()*sizeof(uchar));
 
-    if(! image.data )                              // Check for invalid input
-    {
-        cout <<  "Could not open or find the image" << std::endl ;
-        return -1;
-    }
+    namedWindow( "Display window", WINDOW_AUTOSIZE );
+    imshow( "Display window", m );
 
-    namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-    imshow( "Display window", image );                   // Show our image inside it.
-
-    waitKey(0);                                          // Wait for a keystroke in the window
+    waitKey(0);
     return 0;
 }
