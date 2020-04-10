@@ -4,3 +4,5 @@
 
 - Dangling IF-ELSE (right now only supports matched if-else)
 - Float data type and operations
+
+- Can swap out functional programming for something else (language feature)
