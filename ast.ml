@@ -5,13 +5,13 @@
 type op = Add | Sub | Equal | Neq | Less | And | Or | Mod
 
 (* New Type Img *)
-type typ = Int | Bool | Img | String
+type typ = Int | Bool | String (*| Img*)
 
 type expr =
     Literal of int
   | BoolLit of bool
   (* Img *)
-  | ImgLit of string
+  (*| ImgLit of string*)
 
     (* String *)
   | StringLit of string
@@ -60,7 +60,7 @@ let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
-  | ImgLit(l) -> "Image: " ^ l
+  (*| ImgLit(l) -> "Image: " ^ l*)
   | StringLit(l) -> "String: " ^ l
 
   | Id(s) -> s
@@ -82,7 +82,7 @@ let rec string_of_stmt = function
 let string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
-  | Img -> "img"
+  (*| Img -> "img"*)
   | String -> "string"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

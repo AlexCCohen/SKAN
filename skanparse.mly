@@ -8,7 +8,7 @@ open Ast
 %token EQ NEQ LT AND OR
 %token IF ELSE WHILE INT BOOL
 
-%token IMG 
+/* %token IMG */
 
 /* return, COMMA token */
 %token RETURN COMMA
@@ -50,7 +50,7 @@ vdecl:
 typ:
     INT   { Int   }
   | BOOL  { Bool  }
-  | IMG   { Img   }
+  /*| IMG   { Img   }*/
 
 /* fdecl */
 fdecl:

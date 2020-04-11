@@ -31,12 +31,19 @@ let check (globals, functions) =
   (* Collect function declarations for built-in functions: no bodies *)
   
   (* expand for img types and string*)
-  let built_in_decls =
+  (*let built_in_decls =
     StringMap.add "print" {
       rtyp = Int;
       fname = "print";
       formals = [(Int, "x")];
       locals = []; body = [] } StringMap.empty
+  in*)
+  let built_in_decls =
+    let add_bind map func_def = StringMap.add func_def.fname func_def map
+    in List.fold_left add_bind StringMap.empty [
+      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; locals = []; body = [] };
+    ]
   in
 
   (* Add function name to symbol table *)
@@ -75,7 +82,7 @@ let check (globals, functions) =
       match (lvaluet, rvaluet) with
       (Int, Int)-> lvaluet
       |(Bool, Bool) -> lvaluet
-      |(Img, String) -> lvaluet
+      (*|(Img, String) -> lvaluet*)
       |_ -> raise (Failure err)
     in
 
@@ -95,7 +102,7 @@ let check (globals, functions) =
         Literal l -> (Int, SLiteral l)
       | StringLit l -> (String, SStringLit l)
       | BoolLit l -> (Bool, SBoolLit l)
-      | ImgLit l -> (Img, SImgLit l)
+      (*| ImgLit l -> (Img, SImgLit l)*)
       | Id var -> (type_of_identifier var, SId var)
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var

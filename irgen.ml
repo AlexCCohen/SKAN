@@ -24,7 +24,7 @@ let translate (globals, functions) =
 
   (* Create the LLVM compilation module into which
      we will generate code *)
-  let the_module = L.create_module context "MicroC" in
+  let the_module = L.create_module context "SKAN" in
 
   (* Get types from the context *)
   let i32_t      = L.i32_type    context
@@ -32,10 +32,12 @@ let translate (globals, functions) =
   and i1_t       = L.i1_type     context in
 
   (* Return the LLVM type for a MicroC type *)
+
+
   let ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
-    |A.Img -> L.pointer_type i32_t
+    (*|A.Img -> L.pointer_type i32_t*)
 
   in
 
@@ -49,16 +51,48 @@ let translate (globals, functions) =
   
  (* Built-in functions *)
 
-let read_image = L.function_type (L.pointer_type i32_t) [| L.pointer_type i8_t |] in
+(* let read_image = L.function_type (L.pointer_type i32_t) [| L.pointer_type i8_t |] in
 let read_image_func = L.declare_function "read_image" read_image the_module in
 
 let write_image = L.function_type i32_t [| L.pointer_type i32_t; i32_t; i32_t; L.pointer_type i8_t |] in
-let write_image_func = L.declare_function "write_image" write_image the_module in
+let write_image_func = L.declare_function "write_image" write_image the_module in *)(* replace this with print big to make sure linking is correct*)
 
+  let print_int : L.lltype =
+    L.function_type i32_t (*(L.pointer_type i32_t context)*)
+    [| i32_t|] in
+    
+  let print_int_func : L.llvalue =
+    L.declare_function "print_int" print_int the_module in
+
+    
   let printf_t : L.lltype =
     L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue =
     L.declare_function "printf" printf_t the_module in
+
+(*  SECTION 4b: Calling C's print function 
+let print_func : L.llvalue =
+  L.declare_function "printf" print_t the_module
+  in let print_by_type ltyp e' builder mat_dim_map img_dim_map m_row m_col =
+    (match ltyp with
+        "i32" ->
+          ((L.build_call print_func [| int_format_str builder ; e' |]
+          "printf" builder), (mat_dim_map, img_dim_map))
+      | "i1" -> (* prints 1 for true, 0 for false *)
+          ((L.build_call print_func [| int_format_str builder ; e' |]
+          "printf" builder), (mat_dim_map, img_dim_map))
+      | "double" ->
+          ((L.build_call print_func [| double_format_str builder ; e' |]
+          "printf" builder), (mat_dim_map, img_dim_map))
+      | "i8*" ->  (* string *)
+          ((L.build_call print_func [| str_format_str builder ; e' |]
+          "printf" builder), (mat_dim_map, img_dim_map))
+      | "void" -> raise (Failure ("Can't print void type"))
+      | _ ->  (* must be matrix *)
+          ((L.build_call print_func [| (mat_format_str builder m_row m_col) ; e' |]
+          "printf" builder), (mat_dim_map, img_dim_map)))
+  in*)
+
 
   (* Define each function (arguments and return type) so we can
      call it even before we've created its body *)
@@ -129,6 +163,9 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
       | SCall ("print", [e]) ->
         L.build_call printf_func [| int_format_str ; (build_expr builder e) |]
           "printf" builder
+      | SCall ("print_int", [e]) ->
+        L.build_call print_int_func [| (build_expr builder e) |]
+          "print_int" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (build_expr builder) (List.rev args)) in

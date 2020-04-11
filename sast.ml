@@ -8,7 +8,7 @@ type sexpr = typ * sx
 and sx =
     SLiteral of int
   | SBoolLit of bool
-  | SImgLit of string
+  (*| SImgLit of string*)
   | SStringLit of string
   | SId of string
   | SBinop of sexpr * op * sexpr
@@ -43,7 +43,7 @@ let rec string_of_sexpr (t, e) =
         SLiteral(l) -> string_of_int l
       | SBoolLit(true) -> "true"
       | SBoolLit(false) -> "false"
-      | SImgLit(l) -> "Image: " ^ l
+      (*| SImgLit(l) -> "Image: " ^ l*)
       | SStringLit(l) -> "String: " ^ l
       | SId(s) -> s
       | SBinop(e1, o, e2) ->

@@ -8,7 +8,11 @@
 using namespace cv;
 using namespace std;
 
-int main( int argc, char** argv )
+extern "C" void print_int(int x) {
+    cout << "int: " << x << endl;
+}
+
+extern "C" int load(char imgName[])
 {
     Mat img;
     img=imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -32,5 +36,6 @@ int main( int argc, char** argv )
     imshow( "Display window", m );
 
     waitKey(0);
+    cout << img.cols << endl;
     return 0;
 }

@@ -2,7 +2,7 @@
   Add string literal (i.e. "hello")*)
 (* Ocamllex scanner for MicroC *)
 
-{ open Microcparse }
+{ open Skanparse }
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
@@ -35,7 +35,7 @@ rule token = parse
 | "bool"   { BOOL }
 
 (* IMG type *)
-| "img"    { IMG }
+(*| "img"    { IMG }*)
 
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
