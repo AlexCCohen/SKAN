@@ -93,7 +93,7 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
     L.declare_function "initImg" initImg_t the_module in
   
   let load_t : L.lltype =
-    L.function_type (L.pointer_type struct_img_t)
+    L.function_type (struct_img_t)
     [| str_t |] in
   
   let load_func: L.llvalue =

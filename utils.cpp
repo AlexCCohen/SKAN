@@ -5,7 +5,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <string>
-//#include <experimental/optional>
 #include <filesystem>
 
 using namespace cv;
@@ -25,11 +24,11 @@ extern "C" void print_str(char x[]) {
 
 extern "C" void initImg(struct Img *img) {
     cout << "Image inited" << endl;
-    Mat curr;
+    /*Mat curr;
     curr = imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
     namedWindow( "Display window", WINDOW_AUTOSIZE );
     imshow( "Display window", curr);
-    waitKey(0);
+    waitKey(0);*/
 }
 
 extern "C" struct Img* load(char imageName[])
