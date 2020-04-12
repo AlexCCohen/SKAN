@@ -19,5 +19,5 @@ skan.native:
 .PHONY: clean
 clean:
 	ocamlbuild -clean
-	rm -f *.native
-	rm -f *.o *.a *.s a.out *.byte
+	rm -f *.native *.ir
+	rm -f *.o *.a *.s *.out *.byte
