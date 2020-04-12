@@ -30,13 +30,22 @@ let translate (globals, functions) =
   let i32_t      = L.i32_type    context
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context in
+  
+  let str_t = L.pointer_type i8_t in
 
   (* Return the LLVM type for a MicroC type *)
+  let struct_img_t : L.lltype = 
+    L.named_struct_type context "Img" in
 
+  let _ =
+    L.struct_set_body struct_img_t
+    [| str_t |] false in
 
   let ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
+    | A.Img -> struct_img_t
+    | A.String -> str_t
     (*|A.Img -> L.pointer_type i32_t*)
 
   in
@@ -57,6 +66,11 @@ let read_image_func = L.declare_function "read_image" read_image the_module in
 let write_image = L.function_type i32_t [| L.pointer_type i32_t; i32_t; i32_t; L.pointer_type i8_t |] in
 let write_image_func = L.declare_function "write_image" write_image the_module in *)(* replace this with print big to make sure linking is correct*)
 
+  let printf_t : L.lltype =
+    L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
+  let printf_func : L.llvalue =
+    L.declare_function "printf" printf_t the_module in
+
   let print_int : L.lltype =
     L.function_type i32_t (*(L.pointer_type i32_t context)*)
     [| i32_t|] in
@@ -64,11 +78,26 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let print_int_func : L.llvalue =
     L.declare_function "print_int" print_int the_module in
 
+  let print_str : L.lltype =
+    L.function_type str_t (*(L.pointer_type i32_t context)*)
+    [| str_t|] in
     
-  let printf_t : L.lltype =
-    L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
-  let printf_func : L.llvalue =
-    L.declare_function "printf" printf_t the_module in
+  let print_str_func : L.llvalue =
+    L.declare_function "print_str" print_str the_module in
+
+  let initImg_t : L.lltype =
+    L.function_type (L.void_type context)
+    [| L.pointer_type struct_img_t |] in
+
+  let initImg : L.llvalue =
+    L.declare_function "initImg" initImg_t the_module in
+  
+  let load_t : L.lltype =
+    L.function_type (L.pointer_type struct_img_t)
+    [| str_t |] in
+  
+  let load_func: L.llvalue =
+    L.declare_function "load" load_t the_module in
 
 (*  SECTION 4b: Calling C's print function 
 let print_func : L.llvalue =
@@ -125,7 +154,10 @@ let print_func : L.llvalue =
       (* Allocate space for any locally declared variables and add the
        * resulting registers to our map *)
       and add_local m (t, n) =
-        let local_var = L.build_alloca (ltype_of_typ t) n builder
+        let local_var = L.build_alloca (ltype_of_typ t) n builder in
+        let _ = (match t with
+          | A.Img -> L.build_call initImg [| local_var |] "" builder
+          | _ -> local_var)
         in StringMap.add n local_var m
       in
 
@@ -145,6 +177,7 @@ let print_func : L.llvalue =
         SLiteral i  -> L.const_int i32_t i
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SId s       -> L.build_load (lookup s) s builder
+      | SStringLit s -> L.build_global_stringptr s "str" builder
       | SAssign (s, e) -> let e' = build_expr builder e in
         ignore(L.build_store e' (lookup s) builder); e'
       | SBinop (e1, op, e2) ->
@@ -166,6 +199,12 @@ let print_func : L.llvalue =
       | SCall ("print_int", [e]) ->
         L.build_call print_int_func [| (build_expr builder e) |]
           "print_int" builder
+      | SCall ("print_str", [e]) ->
+        L.build_call print_str_func [| (build_expr builder e) |]
+          "print_str" builder
+      | SCall ("load", [e]) ->
+        L.build_call load_func [| (build_expr builder e) |]
+          "load" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (build_expr builder) (List.rev args)) in

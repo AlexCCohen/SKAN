@@ -5,7 +5,7 @@
 type op = Add | Sub | Equal | Neq | Less | And | Or | Mod
 
 (* New Type Img *)
-type typ = Int | Bool | String (*| Img*)
+type typ = Int | Bool | String | Img
 
 type expr =
     Literal of int
@@ -82,7 +82,7 @@ let rec string_of_stmt = function
 let string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
-  (*| Img -> "img"*)
+  | Img -> "img"
   | String -> "string"
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

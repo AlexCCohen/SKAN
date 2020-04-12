@@ -19,6 +19,11 @@ int main() {
   int y;
   int z;
   int s;
+  string c;
+  img i;
+  c = "hello";
+  /*print_str("hello");*/
+  i = load("test_fish.png");
   a = 18;
   b = 9;
   x = 2;

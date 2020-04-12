@@ -4,15 +4,54 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include <string>
+//#include <experimental/optional>
+#include <filesystem>
 
 using namespace cv;
 using namespace std;
+
+struct Img {
+    char name[];
+};
 
 extern "C" void print_int(int x) {
     cout << "int: " << x << endl;
 }
 
-extern "C" int load(char imgName[])
+extern "C" void print_str(char x[]) {
+    cout << "str: " << x << endl;
+}
+
+extern "C" void initImg(struct Img *img) {
+    cout << "Image inited" << endl;
+    Mat curr;
+    curr = imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
+    namedWindow( "Display window", WINDOW_AUTOSIZE );
+    imshow( "Display window", curr);
+    waitKey(0);
+}
+
+extern "C" struct Img* load(char imageName[])
+{
+    //make a folder
+    //go inside folder and make temp variable name
+    if (!std::__fs::filesystem::is_directory("tempDir"))
+    {
+        std::__fs::filesystem::create_directory("tempDir");
+    }
+
+    string path = string("tempDir/") + string(imageName);
+
+    Mat img;
+    img = imread(imageName, CV_LOAD_IMAGE_GRAYSCALE);
+    imwrite(path, img);
+    struct Img* output = (struct Img*) malloc(sizeof(struct Img));
+    strcpy(output->name, path.c_str());
+    return output;
+
+}
+/*extern "C" int load(char imgName[])
 {
     Mat img;
     img=imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
@@ -38,4 +77,4 @@ extern "C" int load(char imgName[])
     waitKey(0);
     cout << img.cols << endl;
     return 0;
-}
+}*/

@@ -35,7 +35,8 @@ rule token = parse
 | "bool"   { BOOL }
 
 (* IMG type *)
-(*| "img"    { IMG }*)
+| "img"    { IMG }
+| "string" { STRING }
 
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }

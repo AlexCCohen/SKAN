@@ -43,6 +43,8 @@ let check (globals, functions) =
     in List.fold_left add_bind StringMap.empty [
       { rtyp = Int; fname = "print"; formals = [(Int, "x")]; locals = []; body = [] };
       { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; locals = []; body = [] };
+      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; locals = []; body = [] };
+      { rtyp = Img; fname= "load"; formals = [(String, "x")]; locals = []; body = [] };
     ]
   in
 
@@ -80,10 +82,11 @@ let check (globals, functions) =
     let check_assign lvaluet rvaluet err =
       (*if lvaluet = rvaluet then lvaluet else raise (Failure err)*)
       match (lvaluet, rvaluet) with
-      (Int, Int)-> lvaluet
-      |(Bool, Bool) -> lvaluet
-      (*|(Img, String) -> lvaluet*)
-      |_ -> raise (Failure err)
+        (Int, Int)-> lvaluet
+      | (Bool, Bool) -> lvaluet
+      | (String, String) -> lvaluet
+      | (Img, Img) -> lvaluet
+      | _ -> raise (Failure err)
     in
 
     (* Build local symbol table of variables for this function *)

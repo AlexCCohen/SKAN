@@ -6,7 +6,7 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD
 %token EQ NEQ LT AND OR
-%token IF ELSE WHILE INT BOOL
+%token IF ELSE WHILE INT BOOL IMG STRING
 
 /* %token IMG */
 
@@ -48,9 +48,10 @@ vdecl:
   typ ID { ($1, $2) }
 
 typ:
-    INT   { Int   }
-  | BOOL  { Bool  }
-  /*| IMG   { Img   }*/
+    INT    { Int   }
+  | BOOL   { Bool  }
+  | IMG    { Img   }
+  | STRING { String }
 
 /* fdecl */
 fdecl:
