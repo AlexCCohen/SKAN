@@ -12,11 +12,8 @@ type expr =
   | BoolLit of bool
   (* Img *)
   (*| ImgLit of string*)
-
     (* String *)
   | StringLit of string
-
-
   | Id of string
   | Binop of expr * op * expr
   | Assign of string * expr

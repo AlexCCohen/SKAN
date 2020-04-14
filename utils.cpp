@@ -46,10 +46,25 @@ extern "C" struct Img* load(char imageName[])
     img = imread(imageName, CV_LOAD_IMAGE_GRAYSCALE);
     imwrite(path, img);
     struct Img* output = (struct Img*) malloc(sizeof(struct Img));
-    strcpy(output->name, path.c_str());
+    strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
     return output;
-
 }
+
+extern "C" int save(char location[], struct Img* input)
+{
+    string path = string("tempDir/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_GRAYSCALE);
+
+    imwrite(location, img);
+    return 1;
+}
+
+extern "C" int cleanup(struct Img* input)
+{
+    free(input);
+    return 1;
+}
+
 /*extern "C" int load(char imgName[])
 {
     Mat img;

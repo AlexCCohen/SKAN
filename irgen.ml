@@ -99,6 +99,21 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let load_func: L.llvalue =
     L.declare_function "load" load_t the_module in
 
+  let save_t : L.lltype =
+    L.function_type i32_t
+    [| str_t; struct_img_t |] in
+
+  let save_func : L.llvalue =
+    L.declare_function "save" save_t the_module in
+  
+  let cleanup_t : L.lltype =
+    L.function_type i32_t
+    [| struct_img_t |] in
+  
+  let cleanup_func : L.llvalue =
+    L.declare_function "cleanup" cleanup_t the_module in
+  
+
 (*  SECTION 4b: Calling C's print function 
 let print_func : L.llvalue =
   L.declare_function "printf" print_t the_module
@@ -205,6 +220,12 @@ let print_func : L.llvalue =
       | SCall ("load", [e]) ->
         L.build_call load_func [| (build_expr builder e) |]
           "load" builder
+      | SCall ("save", [e1; e2]) ->
+        L.build_call save_func [| (build_expr builder e1); (build_expr builder e2) |]
+          "save" builder
+      | SCall ("cleanup", [e]) ->
+        L.build_call cleanup_func [| (build_expr builder e) |]
+          "cleanup" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (build_expr builder) (List.rev args)) in

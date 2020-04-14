@@ -45,6 +45,9 @@ let check (globals, functions) =
       { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; locals = []; body = [] };
       { rtyp = String; fname= "print_str"; formals = [(String, "x")]; locals = []; body = [] };
       { rtyp = Img; fname= "load"; formals = [(String, "x")]; locals = []; body = [] };
+      (* return 0 if successful, should be void but placeholder till make void type *)
+      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; locals = []; body = [] };
     ]
   in
 
