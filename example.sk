@@ -1,7 +1,8 @@
-/* The GCD algorithm in SKAN */
+/* Global variables */
 int a;
 int b;
 
+/* GCD Algorithm */
 int gcd(int a, int b) {
   while (a != b) {
     if (b < a) a = a - b;
@@ -10,34 +11,50 @@ int gcd(int a, int b) {
   return a;
 }
 
+/* Test mod operator */
 int mod_test(int x, int y) {
+  int z;
+  z = 6 mod 5;
+  print(z);
+  print(4 mod 3);
+  print(a mod b);
   return x mod y;
+}
+
+/* Test string type and print_str function */
+int string_test(string s) {
+  string x;
+  x = s;
+  print_str(x);
+  print_str("hi");
+  return 0;
 }
 
 int main() {
   int x;
   int y;
-  int z;
-  int s;
+
   string c;
+
   img i;
   img k;
-  c = "hello";
-  /*print_str("hello");*/
-  i = load("test_fish.png");
-  k = i;
-  a = 18;
-  b = 9;
+
   x = 2;
   y = 14;
-  z = 6 mod 5;
-  print_int(x);
+  a = 9;
+  b = 18;
   print(gcd(x,y));
-  print(gcd(3,15));
-  print(gcd(99,121));
   print(gcd(a,b));
-  print(mod_test(a, b));
-  print(4 mod 3);
-  print(z);
+
+  print(mod_test(x, y));
+
+  c = "hello";
+  string_test(c);
+
+  i = load("test_fish.png");
+  k = i;
+  save("new_fish2.png", k);
+  cleanup(i);
+
   return 0;
 }
