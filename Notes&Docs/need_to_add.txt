@@ -1,8 +1,13 @@
-- Print_image function
-- Basic operators on images (+, -, ...)
-- Print functions for other data types
+Scott and Alex:
+- Add image functions, operators (‘+’)
+- Void
+- Immutability- final or const…
 
-- Dangling IF-ELSE (right now only supports matched if-else)
-- Float data type and operations
+Katie and Nick:
+- Don’t declare all vars. up front
+- Declare and assign at once
+- While loop
 
-- Can swap out functional programming for something else (language feature)
+Other potential features:
+- Garbage Collection
+- Type inference
