@@ -22,7 +22,7 @@ extern "C" void print_str(char x[]) {
 extern "C" void initImg(struct Img *img) {
     cout << "Image inited" << endl;
     /*Mat curr;
-    curr = imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
+    curr = imread("test_fish.png", CV_LOAD_IMAGE_COLOR);
     namedWindow( "Display window", WINDOW_AUTOSIZE );
     imshow( "Display window", curr);
     waitKey(0);*/
@@ -40,7 +40,7 @@ extern "C" struct Img* load(char imageName[])
     string path = string("tempDir/") + string(imageName);
 
     Mat img;
-    img = imread(imageName, CV_LOAD_IMAGE_GRAYSCALE);
+    img = imread(imageName, CV_LOAD_IMAGE_COLOR);
     imwrite(path, img);
     struct Img* output = (struct Img*) malloc(sizeof(struct Img));
     strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
@@ -50,7 +50,7 @@ extern "C" struct Img* load(char imageName[])
 extern "C" int save(char location[], struct Img* input)
 {
     string path = string("tempDir/") + string(input->name);
-    Mat img = imread(path, CV_LOAD_IMAGE_GRAYSCALE);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
 
     imwrite(location, img);
     return 1;
@@ -65,7 +65,7 @@ extern "C" int cleanup(struct Img* input)
 /*extern "C" int load(char imgName[])
 {
     Mat img;
-    img=imread("test_fish.png", CV_LOAD_IMAGE_GRAYSCALE);
+    img=imread("test_fish.png", CV_LOAD_IMAGE_COLOR);
 
     // Convert image to vector
     vector<uchar> array;

@@ -72,14 +72,14 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
     L.declare_function "printf" printf_t the_module in
 
   let print_int : L.lltype =
-    L.function_type i32_t (*(L.pointer_type i32_t context)*)
+    L.function_type i32_t
     [| i32_t|] in
     
   let print_int_func : L.llvalue =
     L.declare_function "print_int" print_int the_module in
 
   let print_str : L.lltype =
-    L.function_type str_t (*(L.pointer_type i32_t context)*)
+    L.function_type str_t
     [| str_t|] in
     
   let print_str_func : L.llvalue =
