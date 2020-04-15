@@ -1,3 +1,6 @@
+(* TODO:
+  Built-in functions (load) *)
+  (* expand "built_in_decls" for img types a d string*)
 (* Semantic checking for the MicroC compiler *)
 
 open Ast
@@ -26,12 +29,26 @@ let check (globals, functions) =
   check_binds "global" globals;
 
   (* Collect function declarations for built-in functions: no bodies *)
-  let built_in_decls =
+  
+  (* expand for img types and string*)
+  (*let built_in_decls =
     StringMap.add "print" {
       rtyp = Int;
       fname = "print";
       formals = [(Int, "x")];
       locals = []; body = [] } StringMap.empty
+  in*)
+  let built_in_decls =
+    let add_bind map func_def = StringMap.add func_def.fname func_def map
+    in List.fold_left add_bind StringMap.empty [
+      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; locals = []; body = [] };
+      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; locals = []; body = [] };
+      { rtyp = Img; fname= "load"; formals = [(String, "x")]; locals = []; body = [] };
+      (* return 0 if successful, should be void but placeholder till make void type *)
+      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; locals = []; body = [] };
+    ]
   in
 
   (* Add function name to symbol table *)
@@ -66,7 +83,13 @@ let check (globals, functions) =
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
     let check_assign lvaluet rvaluet err =
-      if lvaluet = rvaluet then lvaluet else raise (Failure err)
+      (*if lvaluet = rvaluet then lvaluet else raise (Failure err)*)
+      match (lvaluet, rvaluet) with
+        (Int, Int)-> lvaluet
+      | (Bool, Bool) -> lvaluet
+      | (String, String) -> lvaluet
+      | (Img, Img) -> lvaluet
+      | _ -> raise (Failure err)
     in
 
     (* Build local symbol table of variables for this function *)
@@ -83,7 +106,9 @@ let check (globals, functions) =
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec check_expr = function
         Literal l -> (Int, SLiteral l)
+      | StringLit l -> (String, SStringLit l)
       | BoolLit l -> (Bool, SBoolLit l)
+      (*| ImgLit l -> (Img, SImgLit l)*)
       | Id var -> (type_of_identifier var, SId var)
       | Assign(var, e) as ex ->
         let lt = type_of_identifier var

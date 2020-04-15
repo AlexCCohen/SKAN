@@ -1,0 +1,60 @@
+/* Global variables */
+int a;
+int b;
+
+/* GCD Algorithm */
+int gcd(int a, int b) {
+  while (a != b) {
+    if (b < a) a = a - b;
+    else b = b - a;
+  }
+  return a;
+}
+
+/* Test mod operator */
+int mod_test(int x, int y) {
+  int z;
+  z = 6 mod 5;
+  print(z);
+  print(4 mod 3);
+  print(a mod b);
+  return x mod y;
+}
+
+/* Test string type and print_str function */
+int string_test(string s) {
+  string x;
+  x = s;
+  print_str(x);
+  print_str("hi");
+  return 0;
+}
+
+int main() {
+  int x;
+  int y;
+
+  string c;
+
+  img i;
+  img k;
+
+  x = 2;
+  y = 14;
+  a = 9;
+  b = 18;
+  print(gcd(x,y));
+  print(gcd(a,b));
+
+  print(mod_test(x, y));
+
+  c = "hello";
+  string_test(c);
+
+  i = load("test_fish.png");
+  k = i;
+  save("new_fish2.png", k);
+  cleanup(i);
+
+  return 0;
+}

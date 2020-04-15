@@ -1,6 +1,6 @@
 # SKAN
 
-## How to Compile and Run MicroC
+## How to Compile and Run SKAN/MicroC
 
 Install all requirements using homebrew:
 
@@ -11,6 +11,20 @@ Install all requirements using homebrew:
 ```brew install pkg-config```
 
 ```opam install llvm```
+
+### SKAN
+
+Compile:
+
+```make```
+
+To compile and run {BASE}.sk:
+
+```./run.sh {BASE].sk```
+
+```./{BASE}.out```
+
+### MicroC 
 
 Compile everything:
 

@@ -4,14 +4,18 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN
+%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD
 %token EQ NEQ LT AND OR
-%token IF ELSE WHILE INT BOOL
+%token IF ELSE WHILE INT BOOL IMG STRING
+
+/* %token IMG */
+
 /* return, COMMA token */
 %token RETURN COMMA
 %token <int> LITERAL
 %token <bool> BLIT
 %token <string> ID
+%token <string> STR_LITERAL
 %token EOF
 
 %start program
@@ -22,7 +26,7 @@ open Ast
 %left AND
 %left EQ NEQ
 %left LT
-%left PLUS MINUS
+%left PLUS MINUS MOD
 
 %%
 
@@ -44,8 +48,10 @@ vdecl:
   typ ID { ($1, $2) }
 
 typ:
-    INT   { Int   }
-  | BOOL  { Bool  }
+    INT    { Int   }
+  | BOOL   { Bool  }
+  | IMG    { Img   }
+  | STRING { String }
 
 /* fdecl */
 fdecl:
@@ -87,8 +93,10 @@ expr:
     LITERAL          { Literal($1)            }
   | BLIT             { BoolLit($1)            }
   | ID               { Id($1)                 }
+  | STR_LITERAL      { StringLit($1)          }
   | expr PLUS   expr { Binop($1, Add,   $3)   }
   | expr MINUS  expr { Binop($1, Sub,   $3)   }
+  | expr MOD    expr { Binop ($1, Mod, $3)    }
   | expr EQ     expr { Binop($1, Equal, $3)   }
   | expr NEQ    expr { Binop($1, Neq, $3)     }
   | expr LT     expr { Binop($1, Less,  $3)   }

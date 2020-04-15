@@ -1,6 +1,8 @@
+(* TODO:
+  Add string literal (i.e. "hello")*)
 (* Ocamllex scanner for MicroC *)
 
-{ open Microcparse }
+{ open Skanparse }
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
@@ -17,6 +19,7 @@ rule token = parse
 | ','      { COMMA }
 | '+'      { PLUS }
 | '-'      { MINUS }
+| "mod"    { MOD }
 | '='      { ASSIGN }
 | "=="     { EQ }
 | "!="     { NEQ }
@@ -30,10 +33,20 @@ rule token = parse
 | "return" { RETURN }
 | "int"    { INT }
 | "bool"   { BOOL }
+
+(* IMG type *)
+| "img"    { IMG }
+| "string" { STRING }
+
 | "true"   { BLIT(true)  }
 | "false"  { BLIT(false) }
 | digit+ as lem  { LITERAL(int_of_string lem) }
+
+(* Works for strings or images right now *)
 | letter (digit | letter | '_')* as lem { ID(lem) }
+
+| '"' ([^ '"']* as lxm) '"' { STR_LITERAL(lxm) }
+
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }
 

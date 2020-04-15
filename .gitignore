@@ -1,0 +1,11 @@
+*.dSYM
+_build*
+..git*
+.*
+*.out
+*.native
+*.ir
+*.s
+tempDir*
+
+!.gitignore
