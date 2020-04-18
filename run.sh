@@ -7,6 +7,7 @@
     Run executable like ./{base}.out
 COMMENT
 
+export PKG_CONFIG_PATH=/usr/local/opt/opencv@2/lib/pkgconfig
 filename=$1
 base=${filename%.*}
 rm -f ${base}.ir ${base}.ir.s ${base}.out
