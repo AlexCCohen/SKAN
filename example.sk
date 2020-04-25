@@ -1,7 +1,3 @@
-/* Global variables */
-int a;
-int b;
-
 /* GCD Algorithm */
 int gcd(int a, int b) {
   while (a != b) {
@@ -17,7 +13,6 @@ int mod_test(int x, int y) {
   z = 6 mod 5;
   print(z);
   print(4 mod 3);
-  print(a mod b);
   return x mod y;
 }
 
@@ -33,26 +28,22 @@ int string_test(string s) {
 int main() {
   int x;
   int y;
-
-  string c;
-
-  img i;
-  img k;
-
   x = 2;
   y = 14;
-  a = 9;
-  b = 18;
   print(gcd(x,y));
+
+  int a = 9;
+  int b = 18;
   print(gcd(a,b));
 
   print(mod_test(x, y));
 
+  string c;
   c = "hello";
   string_test(c);
 
-  i = load("test_fish.png");
-  k = i;
+  img i = load("test_fish.png");
+  img k = i;
   save("new_fish2.png", k);
   cleanup(i);
 

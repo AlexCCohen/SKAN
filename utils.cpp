@@ -28,6 +28,11 @@ extern "C" void initImg(struct Img *img) {
     waitKey(0);*/
 }
 
+extern "C" struct Img* emptyInitImg() {
+    cout << "EmptyImg inited" << endl;
+    return NULL;
+}
+
 extern "C" struct Img* load(char imageName[])
 {
     //make a folder
