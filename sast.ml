@@ -1,5 +1,3 @@
-(*TODO:
-  Add from AST *)
 (* Semantically-checked Abstract Syntax Tree and functions for printing it *)
 
 open Ast
@@ -15,6 +13,7 @@ and sx =
   | SAssign of string * sexpr
   (* call *)
   | SCall of string * sexpr list
+  | SNoExpr
 
 type sstmt =
     SBlock of sstmt list
@@ -23,17 +22,17 @@ type sstmt =
   | SWhile of sexpr * sstmt
   (* return *)
   | SReturn of sexpr
+  | SLocal of typ * string * sexpr
 
 (* func_def: ret_typ fname formals locals body *)
 type sfunc_def = {
   srtyp: typ;
   sfname: string;
   sformals: bind list;
-  slocals: bind list;
   sbody: sstmt list;
 }
 
-type sprogram = bind list * sfunc_def list
+type sprogram = sfunc_def list
 
 
 
@@ -51,7 +50,9 @@ let rec string_of_sexpr (t, e) =
       | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
       | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
+      | SNoExpr -> "NoExpr"
     ) ^ ")"
+
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -61,16 +62,17 @@ let rec string_of_sstmt = function
   | SIf(e, s1, s2) ->  "if (" ^ string_of_sexpr e ^ ")\n" ^
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
+  | SLocal(t, id, v) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_sexpr v ^ ";\n"
+
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.srtyp ^ " " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ")\n{\n" ^
-  String.concat "" (List.map string_of_vdecl fdecl.slocals) ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
   "}\n"
 
-let string_of_sprogram (vars, funcs) =
+  
+let string_of_sprogram funcs =
   "\n\nSementically checked program: \n\n" ^
-  String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
-  String.concat "\n" (List.map string_of_sfdecl funcs)
+  String.concat "\n" (List.map string_of_sfdecl funcs)  

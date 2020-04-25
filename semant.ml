@@ -11,9 +11,9 @@ module StringMap = Map.Make(String)
 (* Semantic checking of the AST. Returns an SAST if successful,
    throws an exception if something is wrong.
 
-   Check each global variable, then check each function *)
+   Check each function *)
 
-let check (globals, functions) =
+let check functions =
 
   (* Verify a list of bindings has no duplicate names *)
   let check_binds (kind : string) (binds : (typ * string) list) =
@@ -25,29 +25,18 @@ let check (globals, functions) =
     in dups (List.sort (fun (_,a) (_,b) -> compare a b) binds)
   in
 
-  (* Make sure no globals duplicate *)
-  check_binds "global" globals;
-
   (* Collect function declarations for built-in functions: no bodies *)
-  
-  (* expand for img types and string*)
-  (*let built_in_decls =
-    StringMap.add "print" {
-      rtyp = Int;
-      fname = "print";
-      formals = [(Int, "x")];
-      locals = []; body = [] } StringMap.empty
-  in*)
+
   let built_in_decls =
     let add_bind map func_def = StringMap.add func_def.fname func_def map
     in List.fold_left add_bind StringMap.empty [
-      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; locals = []; body = [] };
-      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; locals = []; body = [] };
-      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; locals = []; body = [] };
-      { rtyp = Img; fname= "load"; formals = [(String, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; body = [] };
+      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; body = [] };
+      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; body = [] };
+      { rtyp = Img; fname= "load"; formals = [(String, "x")]; body = [] };
       (* return 0 if successful, should be void but placeholder till make void type *)
-      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; locals = []; body = [] };
-      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; locals = []; body = [] };
+      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
+      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
     ]
   in
 
@@ -78,7 +67,6 @@ let check (globals, functions) =
   let check_func func =
     (* Make sure no formals or locals are void or duplicates *)
     check_binds "formal" func.formals;
-    check_binds "local" func.locals;
 
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
@@ -89,38 +77,38 @@ let check (globals, functions) =
       | (Bool, Bool) -> lvaluet
       | (String, String) -> lvaluet
       | (Img, Img) -> lvaluet
+      | (_, Void) -> lvaluet
       | _ -> raise (Failure err)
     in
 
     (* Build local symbol table of variables for this function *)
-    let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
-        StringMap.empty (globals @ func.formals @ func.locals )
+    let formals = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
+        StringMap.empty func.formals
     in
 
     (* Return a variable from our local symbol table *)
-    let type_of_identifier s =
+    let type_of_identifier s symbols =
       try StringMap.find s symbols
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
 
     (* Return a semantically-checked expression, i.e., with a type *)
-    let rec check_expr = function
+    let rec check_expr symbols = function
         Literal l -> (Int, SLiteral l)
-      | StringLit l -> (String, SStringLit l)
       | BoolLit l -> (Bool, SBoolLit l)
-      (*| ImgLit l -> (Img, SImgLit l)*)
-      | Id var -> (type_of_identifier var, SId var)
+      | StringLit l -> (String, SStringLit l)
+      | Id var -> (type_of_identifier var symbols, SId var)
       | Assign(var, e) as ex ->
-        let lt = type_of_identifier var
-        and (rt, e') = check_expr e in
+        let lt = type_of_identifier var symbols
+        and (rt, e') = check_expr symbols e in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')))
 
       | Binop(e1, op, e2) as e ->
-        let (t1, e1') = check_expr e1
-        and (t2, e2') = check_expr e2 in
+        let (t1, e1') = check_expr symbols e1
+        and (t2, e2') = check_expr symbols e2 in
         let err = "illegal binary operator " ^
                   string_of_typ t1 ^ " " ^ string_of_op op ^ " " ^
                   string_of_typ t2 ^ " in " ^ string_of_expr e
@@ -144,48 +132,73 @@ let check (globals, functions) =
           raise (Failure ("expecting " ^ string_of_int param_length ^
                           " arguments in " ^ string_of_expr call))
         else let check_call (ft, _) e =
-               let (et, e') = check_expr e in
+               let (et, e') = check_expr symbols e in
                let err = "illegal argument found " ^ string_of_typ et ^
                          " expected " ^ string_of_typ ft ^ " in " ^ string_of_expr e
                in (check_assign ft et err, e')
           in
           let args' = List.map2 check_call fd.formals args
           in (fd.rtyp, SCall(fname, args'))
-    in
+      | NoExpr -> (Void, SNoExpr)
+     in  
 
-    let check_bool_expr e =
-      let (t, e') = check_expr e in
+    let check_bool_expr symbols e =
+      let (t, e') = check_expr symbols e in
       match t with
       | Bool -> (t, e')
       |  _ -> raise (Failure ("expected Boolean expression in " ^ string_of_expr e))
     in
 
-    let rec check_stmt_list =function
+    let rec check_stmt_list symbols = function
         [] -> []
-      | Block sl :: sl'  -> check_stmt_list (sl @ sl') (* Flatten blocks *)
-      | s :: sl -> check_stmt s :: check_stmt_list sl
+      | Block sl :: sl'  -> check_stmt_list symbols (sl @ sl') (* Flatten blocks *)
+      | s :: sl ->
+          let (checked_stmts, new_symbols) = check_stmt symbols s in
+            checked_stmts :: check_stmt_list new_symbols sl
+
     (* Return a semantically-checked statement i.e. containing sexprs *)
-    and check_stmt =function
+    and check_stmt symbols = function
       (* A block is correct if each statement is correct and nothing
          follows any Return statement.  Nested blocks are flattened. *)
-        Block sl -> SBlock (check_stmt_list sl)
-      | Expr e -> SExpr (check_expr e)
+        Block sl -> (SBlock (check_stmt_list symbols sl), symbols ) 
+      | Expr e -> (SExpr (check_expr symbols e), symbols)
       | If(e, st1, st2) ->
-        SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
+        (SIf(check_bool_expr symbols e, (match check_stmt symbols st1 with (x,_)->x), (match check_stmt symbols st2 with (y,_)->y)), symbols)
       | While(e, st) ->
-        SWhile(check_bool_expr e, check_stmt st)
+        (SWhile(check_bool_expr symbols e, match check_stmt symbols st with (x,_)->x), symbols)
       | Return e ->
-        let (t, e') = check_expr e in
-        if t = func.rtyp then SReturn (t, e')
+        let (t, e') = check_expr symbols e in
+        if t = func.rtyp then (SReturn (t, e'), symbols)
         else raise (
             Failure ("return gives " ^ string_of_typ t ^ " expected " ^
                      string_of_typ func.rtyp ^ " in " ^ string_of_expr e))
-    in (* body of check_func *)
-    { srtyp = func.rtyp;
-      sfname = func.fname;
-      sformals = func.formals;
-      slocals  = func.locals;
-      sbody = check_stmt_list func.body
-    }
+      | Local (typ, varname, e) ->
+        if StringMap.mem varname symbols then
+          raise (Failure ("Local var " ^ varname ^ " already declared"))
+        else
+          let (t, e') = check_expr symbols e in
+          let new_table = StringMap.add varname typ symbols in
+          if typ = t || t = Void then
+            match e with
+              NoExpr ->
+                (* Initialize variables *)
+                let init_noexpr vartype =
+                  (match vartype with
+                    Int -> (Int, SLiteral 0)
+                  | Bool -> (Bool, SBoolLit true)
+                  | String -> (String, SStringLit "")
+                  | Img -> (Img, SNoExpr) (***** FIX *****)
+                  | Void -> (Void, SNoExpr)) in
+                  (SLocal (typ, varname, init_noexpr typ), new_table)
+            | _ -> (SLocal (typ, varname, check_expr symbols e), new_table)
+          else raise (Failure ("Variable type " ^ string_of_typ typ ^ " does not match expression type " ^ string_of_typ t))
+        (* Need to check typ = type of e, then add new var to symbols table returned *)    
   in
-  (globals, List.map check_func functions)
+  (* body of check_func *)
+  { srtyp = func.rtyp;
+    sfname = func.fname;
+    sformals = func.formals;
+    sbody = check_stmt_list formals func.body
+  }
+  in
+  (List.map check_func functions)
