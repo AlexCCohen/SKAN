@@ -21,6 +21,7 @@ rule token = parse
 | '-'      { MINUS }
 | "mod"    { MOD }
 | '='      { ASSIGN }
+| "+="     { BRIGHTEN }
 | "=="     { EQ }
 | "!="     { NEQ }
 | '<'      { LT }

@@ -33,6 +33,7 @@ type expr =
   (* function call *)
   | Call of string * expr list
   | NoExpr
+  | Brighten of string * expr
 
 type stmt =
     Block of stmt list
@@ -89,6 +90,7 @@ let rec string_of_expr = function
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | NoExpr -> "NoExpr"
+  | Brighten(v, e) -> v ^ " += " ^ string_of_expr e
 
 
 let rec string_of_stmt = function

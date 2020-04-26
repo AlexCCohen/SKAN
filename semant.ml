@@ -37,6 +37,7 @@ let check functions =
       (* return 0 if successful, should be void but placeholder till make void type *)
       { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
       { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
+      { rtyp = Img; fname = "brighten"; formals = [(Img, "x"); (Int, "b")]; body = [] };
     ]
   in
 
@@ -105,7 +106,15 @@ let check functions =
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')))
-
+      | Brighten(var, e) as ex ->
+        let lt = type_of_identifier var symbols
+        and (rt, e') = check_expr symbols e in
+        let err = "illegal brighten " ^ string_of_typ lt ^ " += " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr ex
+        in
+        if rt != Int || lt != Img then
+          raise(Failure err)
+        else (Img, SBrighten(var, (rt, e')))
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr symbols e1
         and (t2, e2') = check_expr symbols e2 in

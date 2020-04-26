@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <sys/stat.h>
 
 using namespace cv;
 using namespace std;
@@ -37,12 +38,13 @@ extern "C" struct Img* load(char imageName[])
 {
     //make a folder
     //go inside folder and make temp variable name
-    if (!std::__fs::filesystem::is_directory("tempDir"))
+    mkdir("./temp_directory", 0777);
+    /*if (!std::__fs::filesystem::is_directory("tempDir"))
     {
         std::__fs::filesystem::create_directory("tempDir");
-    }
+    }*/
 
-    string path = string("tempDir/") + string(imageName);
+    string path = string("temp_directory/") + string(imageName);
 
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
@@ -54,7 +56,7 @@ extern "C" struct Img* load(char imageName[])
 
 extern "C" int save(char location[], struct Img* input)
 {
-    string path = string("tempDir/") + string(input->name);
+    string path = string("temp_directory/") + string(input->name);
     Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
 
     imwrite(location, img);
@@ -65,6 +67,19 @@ extern "C" int cleanup(struct Img* input)
 {
     free(input);
     return 1;
+}
+
+extern "C" struct Img* brighten(struct Img* input, int value) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+
+    //modifications
+    img = img + value;
+
+    //output temp image
+    imwrite(path, img);
+    return input;
 }
 
 /*extern "C" int load(char imgName[])

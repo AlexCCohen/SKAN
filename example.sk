@@ -43,8 +43,9 @@ int main() {
   string_test(c);
 
   img i = load("test_fish.png");
+  i += 50;
   img k = i;
-  save("new_fish2.png", k);
+  save("bright_fish.png", i);
   cleanup(i);
 
   return 0;
