@@ -38,6 +38,7 @@ let check functions =
       { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
       { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
       { rtyp = Img; fname = "brighten"; formals = [(Img, "x"); (Int, "b")]; body = [] };
+      { rtyp = Img; fname = "copy"; formals = [(Img, "x")]; body = [] };
     ]
   in
 

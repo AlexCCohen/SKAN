@@ -2,7 +2,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
 #include <string>
-#include <filesystem>
+//include <filesystem>
 #include <sys/stat.h>
 
 using namespace cv;
@@ -80,6 +80,20 @@ extern "C" struct Img* brighten(struct Img* input, int value) {
     //output temp image
     imwrite(path, img);
     return input;
+}
+
+extern "C" struct Img* copy(struct Img* input) {
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+
+    string new_img = string("copy_") + string(input->name);
+    string new_path = string("temp_directory/") + new_img;
+
+    imwrite(new_path, img);
+
+    struct Img* output = (struct Img*) malloc(sizeof(struct Img));
+    strcpy(output->name, new_img.c_str());  // Saves imageName without 'tempDir/'
+    return output;
 }
 
 /*extern "C" int load(char imgName[])
