@@ -84,7 +84,7 @@ extern "C" struct Img* brighten(struct Img* input, int value) {
 
 extern "C" struct Img* copy(struct Img* input) {
     string path = string("temp_directory/") + string(input->name);
-    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat img = imread("temp_directory/test_fish.png", CV_LOAD_IMAGE_COLOR);
 
     string new_img = string("copy_") + string(input->name);
     string new_path = string("temp_directory/") + new_img;
