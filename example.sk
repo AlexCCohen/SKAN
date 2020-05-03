@@ -10,7 +10,7 @@ int gcd(int a, int b) {
 /* Test mod operator */
 int mod_test(int x, int y) {
   int z;
-  z = 6 mod 5;
+  z = 7 mod 6;
   print(z);
   print(4 mod 3);
   return x mod y;
