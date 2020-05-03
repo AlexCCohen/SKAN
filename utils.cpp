@@ -1,8 +1,10 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/imgproc/imgproc.hpp>
+//#include "highgui.h"
 #include <iostream>
 #include <string>
-#include <filesystem>
+//#include <filesystem>
 #include <sys/stat.h>
 
 using namespace cv;
@@ -81,6 +83,36 @@ extern "C" struct Img* brighten(struct Img* input, int value) {
     imwrite(path, img);
     return input;
 }
+
+extern "C" int dilation(char location[], struct Img* input)
+{
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+
+    imwrite(location, img);
+    return 1;
+}
+
+/*extern "C" struct Img* dilation(struct Img* input, int size, int shape) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    //Mat out = img;
+
+    //modifications
+    //int seShape = MORPH_RECT;
+    //int seSize = 10;
+    img = img + 20;
+
+    //Mat se = getStructuringElement(seShape, Size(2*seSize+1, 2*seSize+1), 
+    //    Point(2*seSize+1, 2*seSize+1));
+
+    //dilate(img, out, se);
+
+    //output temp image
+    imwrite(path, img);
+    return input;
+}*/
 
 /*extern "C" int load(char imgName[])
 {

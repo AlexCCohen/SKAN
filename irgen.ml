@@ -104,6 +104,20 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
 
   let save_func : L.llvalue =
     L.declare_function "save" save_t the_module in
+
+  (*let dilation_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t; i32_t |] in
+
+  let dilation_func : L.llvalue = 
+    L.declare_function "dilation" dilation_t the_module in*)
+
+  let dilation_t : L.lltype =
+    L.function_type i32_t
+    [| str_t; struct_img_t |] in
+  
+  let dilation_func : L.llvalue =
+    L.declare_function "dilation" dilation_t the_module in
   
   let cleanup_t : L.lltype =
     L.function_type i32_t
@@ -218,6 +232,12 @@ let print_func : L.llvalue =
       | SCall ("save", [e1; e2]) ->
         L.build_call save_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
           "save" builder
+    (*  | SCall ("dilation", [e1; e2; e3]) ->
+        L.build_call dilation_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2); (build_expr builder locals_map e3) |]
+          "dilation" builder *)
+      | SCall ("dilation", [e1; e2]) ->
+        L.build_call dilation_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "dilation" builder
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
