@@ -38,7 +38,11 @@ let check functions =
       { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
       { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
       { rtyp = Img; fname = "brighten"; formals = [(Img, "x"); (Int, "b")]; body = [] };
-      { rtyp = Int; fname= "dilation"; formals = [(String, "name"); (Img, "x")]; body = [] };
+      { rtyp = Int; fname= "dilation"; formals = [(Img, "x"); (Int, "b"); (Int, "c")]; body = [] };
+      { rtyp = Int; fname= "sobel"; formals = [(Img, "x")]; body = [] };
+      { rtyp = Img; fname = "threshold"; formals = [(Img, "x"); (Int, "b")]; body = [] };
+      { rtyp = Img; fname = "gaussian"; formals = [(Img, "x"); (Int, "b")]; body = [] };
+      { rtyp = Img; fname = "color"; formals = [(Img, "x"); (Int, "b")]; body = [] };
     ]
   in
 

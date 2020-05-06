@@ -42,11 +42,32 @@ int main() {
   c = "hello";
   string_test(c);
 
-  img i = load("test_fish.png");
-  i += 50;
-  img k = i;
-  save("bright_fish.png", i);
-  cleanup(i);
+  img i2 = load("Lake.jpg");
+  dilation(i2, 10, 1);
+  save("dilated.png", i2);
+
+  img i3 = load("test_fish.png");
+  sobel(i3);
+  save("sobel.png", i3);
+
+  img i4 = load("Lake.jpg");
+  threshold(i4, 110);
+  save("threshold.png", i4);
+
+  img i5 = load("test_fish.png");
+  gaussian(i5, 25);
+  save("gauss.png", i5);
+
+  img i6 = load("test_fish.png");
+  sobel(i6);
+  color(i6, 3);
+  save("color.png", i6);
+
+  img i7 = load("Lake.jpg");
+  color(i7,5);
+  save("color2.png", i7);
+
+  cleanup(i2);
 
   return 0;
 }
