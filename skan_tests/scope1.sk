@@ -1,0 +1,8 @@
+int fun(int a) {
+    int x = a;
+}
+
+int main() {
+    int i = 10;
+    fun(i);
+}

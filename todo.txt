@@ -1,0 +1,10 @@
+-merge imgfun branch (s)
+- type inferencing (A)
+- error tests/fixing test script (N)
+- demo programs (s)
+
+
+-report (K starting)
+-presentation
+    -powerpoint (N)
+    -demonstration .sk files

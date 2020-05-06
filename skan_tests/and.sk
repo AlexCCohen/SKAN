@@ -1,0 +1,18 @@
+int main(){
+    int x=1;
+    bool t=true; 
+    print_str("test 1");
+    if (x == 1 && t==true) print_str("&& operator worked properly");
+    else print_str("&& operator didn't work properly");
+
+
+    print_str("test 2");
+    if (x == 1 && t!=true) print_str("&& operator didn't work properly");
+    else print_str("&& operator worked properly");
+
+
+    print_str("test 3");
+    if (x != 1 && t!=true) print_str("&& operator didn't work properly");
+    else print_str("&& operator worked properly");
+    return 0;
+}
