@@ -98,13 +98,13 @@ let check functions =
       | BoolLit l -> (Bool, SBoolLit l)
       | StringLit l -> (String, SStringLit l)
       | Id var -> (type_of_identifier var symbols, SId var)
-      | Assign(var, e) as ex ->
+      (*| Assign(var, e) as ex ->
         let lt = type_of_identifier var symbols
         and (rt, e') = check_expr symbols e in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
-        (check_assign lt rt err, SAssign(var, (rt, e')))
+        (check_assign lt rt err, SAssign(var, (rt, e')))*)
 
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr symbols e1
@@ -193,6 +193,17 @@ let check functions =
             | _ -> (SLocal (typ, varname, check_expr symbols e), new_table)
           else raise (Failure ("Variable type " ^ string_of_typ typ ^ " does not match expression type " ^ string_of_typ t))
         (* Need to check typ = type of e, then add new var to symbols table returned *)    
+      | Infer (varname, e) ->
+        if StringMap.mem varname symbols then
+          (let lt = type_of_identifier varname symbols
+            and (rt, e') = check_expr symbols e in
+            let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
+                      string_of_typ rt ^ " in " ^ string_of_expr e
+            in
+            (SAssign (check_assign lt rt err, varname, (rt, e')), symbols))
+        else
+         let (t,_) = check_expr symbols e in
+         check_stmt symbols (Local(t, varname, e))
   in
   (* body of check_func *)
   { srtyp = func.rtyp;

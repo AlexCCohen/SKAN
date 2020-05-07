@@ -10,7 +10,7 @@ and sx =
   | SStringLit of string
   | SId of string
   | SBinop of sexpr * op * sexpr
-  | SAssign of string * sexpr
+  (*| SAssign of string * sexpr*)
   (* call *)
   | SCall of string * sexpr list
   | SNoExpr
@@ -23,6 +23,7 @@ type sstmt =
   (* return *)
   | SReturn of sexpr
   | SLocal of typ * string * sexpr
+  | SAssign of typ * string * sexpr
 
 (* func_def: ret_typ fname formals locals body *)
 type sfunc_def = {
@@ -47,7 +48,7 @@ let rec string_of_sexpr (t, e) =
       | SId(s) -> s
       | SBinop(e1, o, e2) ->
         string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
-      | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
+      (*| SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e*)
       | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
       | SNoExpr -> "NoExpr"
@@ -63,7 +64,7 @@ let rec string_of_sstmt = function
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SLocal(t, id, v) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_sexpr v ^ ";\n"
-
+  | SAssign(t, v, e) -> "(" ^ string_of_typ t ^ " : " ^ v ^ " = " ^ string_of_sexpr e
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.srtyp ^ " " ^
