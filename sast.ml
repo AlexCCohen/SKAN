@@ -64,7 +64,7 @@ let rec string_of_sstmt = function
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SLocal(t, id, v) -> string_of_typ t ^ " " ^ id ^ " = " ^ string_of_sexpr v ^ ";\n"
-  | SAssign(t, v, e) -> "(" ^ string_of_typ t ^ " : " ^ v ^ " = " ^ string_of_sexpr e
+  | SAssign(t, v, e) -> "(" ^ string_of_typ t ^ " : " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
 
 let string_of_sfdecl fdecl =
   string_of_typ fdecl.srtyp ^ " " ^

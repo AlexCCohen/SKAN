@@ -19,6 +19,7 @@ type typ =
   | String
   | Img
   | Void
+  | AnyType
 
 type expr =
     Literal of int
@@ -75,6 +76,7 @@ let string_of_typ = function
   | Img -> "img"
   | String -> "string"
   | Void -> "void"
+  | AnyType -> "anytype"
 
 
 let rec string_of_expr = function

@@ -59,12 +59,17 @@ fdecl:
 
 /* formals_opt */
 formals_opt:
-    /*nothing*/  { [] }
-  | formals_list { $1 }
+    /*nothing*/      { [] }
+  | formals_list     { $1 }
+  | inf_formals_list { $1 }
 
 formals_list:
     typ ID                    { [($1, $2)]     }
   | formals_list COMMA typ ID { ($3, $4) :: $1 }
+
+inf_formals_list:
+  | ID                         { [AnyType, $1] }
+  | inf_formals_list COMMA ID  { (AnyType, $3) :: $1}
 
 stmt_list:
     /* nothing */   { []     }

@@ -5,6 +5,7 @@
 
 open Ast
 open Sast
+open Builtins
 
 module StringMap = Map.Make(String)
 
@@ -29,15 +30,7 @@ let check functions =
 
   let built_in_decls =
     let add_bind map func_def = StringMap.add func_def.fname func_def map
-    in List.fold_left add_bind StringMap.empty [
-      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; body = [] };
-      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; body = [] };
-      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; body = [] };
-      { rtyp = Img; fname= "load"; formals = [(String, "x")]; body = [] };
-      (* return 0 if successful, should be void but placeholder till make void type *)
-      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
-      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
-    ]
+    in List.fold_left add_bind StringMap.empty built_ins
   in
 
   (* Add function name to symbol table *)
@@ -78,6 +71,7 @@ let check functions =
       | (String, String) -> lvaluet
       | (Img, Img) -> lvaluet
       | (_, Void) -> lvaluet
+      | (AnyType, x) | (x, AnyType) -> x
       | _ -> raise (Failure err)
     in
 
@@ -188,7 +182,8 @@ let check functions =
                   | Bool -> (Bool, SBoolLit true)
                   | String -> (String, SStringLit "")
                   | Img -> (Img, SNoExpr) (***** FIX *****)
-                  | Void -> (Void, SNoExpr)) in
+                  | Void -> (Void, SNoExpr)
+                  | AnyType -> (AnyType, SNoExpr)) in
                   (SLocal (typ, varname, init_noexpr typ), new_table)
             | _ -> (SLocal (typ, varname, check_expr symbols e), new_table)
           else raise (Failure ("Variable type " ^ string_of_typ typ ^ " does not match expression type " ^ string_of_typ t))
