@@ -8,7 +8,7 @@ int gcd(a, b) {
 }
 
 /* Test mod operator */
-int mod_test(x, y) {
+int mod_test(int x, y) {
   int z;
   z = 7 mod 6;
   print(z);

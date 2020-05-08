@@ -48,6 +48,7 @@ let translate functions =
     | A.Img    -> struct_img_t
     | A.String -> str_t
     | A.Void   -> void_t
+    | A.AnyType -> raise (Failure ("AnyType not allowed"))
   in
 
  (* Built-in functions *)

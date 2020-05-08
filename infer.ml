@@ -8,7 +8,6 @@ module StringMap = Map.Make(String)
 
 let resolve functions =
 
-
   let built_in_decls =
     let add_bind map func_def = StringMap.add func_def.fname func_def map
     in List.fold_left add_bind StringMap.empty built_ins
@@ -38,7 +37,6 @@ let resolve functions =
     let updated_func_map = StringMap.add var typ func_map in
     StringMap.add fname updated_func_map map
   in
-
 
   (* Return type of expr *)
   let rec get_expr_typ f_map v_map = function
@@ -71,7 +69,6 @@ let resolve functions =
       (find_func fname).rtyp
     | NoExpr -> Void
   in
-
 
   (* Check expr *)
   (* Returns (func_table, var_table) *)
@@ -136,10 +133,8 @@ let resolve functions =
     let find (l, n) formal =
       let (t, v) = match formal with (x,y)->(x,y) in
       let next_num = string_of_int (int_of_string n + 1) in
-      if t = AnyType then
         try (l @ [Some (StringMap.find n map, v)], next_num)
         with Not_found -> (l @ [None], next_num)
-      else (l @ [None], next_num)
     in
   (* Get a list of the types of the formals, in order *)
     let typl = match (List.fold_left find ([], "0") func.formals) with
@@ -195,40 +190,6 @@ let resolve functions =
   body = func.body
   }
   in
-  (*let out = (List.rev (List.map check_func functions)) in
-  List.map (fun f -> print_string (string_of_fdecl f)) out; out*)
+
+  (* Go through functions and make new formals, then reverse *)
   (List.rev (List.map check_func functions))
-  (* HERE, go through functions (and reverse) and make new formals *)
-(* This program MUST return updated formals and nothing else *)
-(* REMEMBER TO REVERSE FUNCTIONS *)
-
-
-(***********************************)
-(*
-  (* Return function with AnyType replaced with correct type *)
-  let check_func func =
-    (* formal_table: var -> typ *)
-    let formal_table = StringMap.find func.fname symbol_table
-    in
-
-    let rec get_formals body = function
-        (t, v) :: tl ->
-          if t != AnyType then
-            (t,v) :: get_formals body tl
-          else
-            if StringMap.mem v formal_table then
-              ((StringMap.find v formal_table), v) :: tl
-            else
-              raise (Failure ("unused function " ^ func.fname))
-      | [] -> []
-  in
-  { rtyp = func.rtyp;
-    fname = func.fname;
-    formals = get_formals func.body func.formals;
-    body = func.body
-  }
-  in
-
-(* Return list of functions in order *)
-(List.rev (List.map check_func functions))
-*)

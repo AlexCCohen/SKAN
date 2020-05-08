@@ -76,7 +76,7 @@ let check functions =
     in
 
     (* Build local symbol table of variables for this function *)
-    let formals = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
+    let formals = List.fold_left (fun m (ty, name) -> if ty != AnyType then StringMap.add name ty m else raise (Failure "Unused function"))
         StringMap.empty func.formals
     in
 
