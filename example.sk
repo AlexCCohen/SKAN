@@ -17,8 +17,7 @@ int mod_test(x, y) {
 }
 
 /* Test string type and print_str function */
-int string_test(string s) {
-  string x;
+int string_test(s) {
   x = s;
   print_str(x);
   print_str("hi");
