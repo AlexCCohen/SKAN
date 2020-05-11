@@ -1,0 +1,6 @@
+int main(){
+    int x=1;
+    if (50) x = 1;
+    else x = 0;
+    return 0;
+}

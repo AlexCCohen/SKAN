@@ -1,0 +1,15 @@
+int foo(int a) {
+    int b = a;
+    int sum = b+c; /* c is not defined in the scope of foo */
+    return sum;
+}
+
+int main() {
+    int a = 1;
+    int c =2;
+    foo(a);
+}
+
+
+
+

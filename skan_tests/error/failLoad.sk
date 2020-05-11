@@ -1,0 +1,5 @@
+int main() {
+
+img i = load(test_fish.jpeg); /* load parameter needs to be in string format and .png */
+return 0;
+}
