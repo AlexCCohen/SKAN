@@ -1,0 +1,10 @@
+- merge imgfun branch (s)
+- demo programs (s)
+- basic clean up code
+    - Put everything into src folder
+
+
+-report (K starting)
+-presentation
+    -powerpoint (N)
+    -demonstration .sk files

@@ -1,0 +1,10 @@
+int adder(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int first = 1;
+    string str = "hello";
+    int third = adder(first,str);
+    return 0;
+}

@@ -1,0 +1,43 @@
+Grammar/Syntax:
+- While (A)
+- If (N)
+- Scope (A)
+    - Locals in other functions
+- Katie Return (returnBool.sk file not found on running?)
+- Main function (s)
+    - If one exists or not
+- Print 'hello world' (K)
+
+Variables/Operators:
+- Declarations (A)
+    - Ordering
+    - Initializing without assigning
+    - Initialize and assign
+- Types (A)
+    - Int, bool, string, img // void
+- Assignments (A)
+    - Expression result to bool
+    - Reassigning
+    // - Incorrect assignments
+- Binary Operators (N)
+
+Functions:
+- Defining new functions (A)
+- Return types (taken care of in orignal return testing)(K)
+- Formal arguments (s)
+    - Number and types
+- In expressions
+
+Util Functions:
+- Test on images (s)
+    -init
+    -load
+    -save
+    -cleanup
+    -whateverScottadds (need to do on new branch)
+- Type check
+- img does not exist (s)
+
+Image Interface:
+- Check image loading/saving works (s)
+    -see util functions tests

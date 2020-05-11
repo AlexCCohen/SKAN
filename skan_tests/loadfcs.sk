@@ -1,0 +1,8 @@
+int main() {
+
+img i = load("test_fish.png");
+save("out_fish.png", i);
+cleanup(i);
+
+
+}

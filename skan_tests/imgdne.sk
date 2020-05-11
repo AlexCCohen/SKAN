@@ -1,0 +1,7 @@
+int main() {
+img i = load("asdfjkalsfj.png");
+save("asdfjkalsfj.png", i);
+cleanup(i);
+
+
+}

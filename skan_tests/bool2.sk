@@ -1,0 +1,5 @@
+int main() {
+    bool i = false;
+    bool a = i;
+    return 0;
+}

@@ -1,0 +1,32 @@
+int main(){
+    int x=1;
+    bool t=true;
+    
+    print_str("test case 1");
+    print_str("Left argument is true, right argument is false. Should still work because at least one argument is true.");
+    if (x==1 || t!=true) print_str("|| operator worked properly");
+    else print_str("|| didn't work properly");
+
+
+
+    print_str("test case 2");
+    print_str("Left argument is false, right argument is true. Should still work because at least one argument is true.");
+    if (x!=1 || t==true) print_str("|| operator worked properly");
+    else print_str("|| didn't work properly");
+
+
+
+
+    print_str("test case 3");
+    print_str("Both arguments are true.");
+    if (x==1 || t==true) print_str("|| operator worked properly");
+    else print_str("|| didn't work properly");
+
+
+
+    print_str("test case 4");
+    print_str("Neither argument is true.");
+    if (x!=1 || t!=true) print_str("|| operator didn't work properly");
+    else print_str("|| worked properly");
+    return 0;
+}

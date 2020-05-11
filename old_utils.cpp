@@ -8,7 +8,8 @@ using namespace cv;
 using namespace std;
 
 struct Img {
-    char name[];
+    //char name[];
+    Mat* i;
 };
 
 extern "C" void print_int(int x) {
@@ -35,41 +36,45 @@ extern "C" struct Img* emptyInitImg() {
 
 extern "C" struct Img* load(char imageName[])
 {
+
+    /*struct Img* output = malloc...;
+    output->img = imread(...);*/
     //make a folder
     //go inside folder and make temp variable name
-    if (!std::__fs::filesystem::is_directory("tempDir"))
+    /*if (!std::__fs::filesystem::is_directory("tempDir"))
     {
         std::__fs::filesystem::create_directory("tempDir");
-    }
+    }*/
 
-    string path = string("tempDir/") + string(imageName);
+    //string path = string("tempDir/") + string(imageName);
 
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
-
-    //check if img exists
-    if (img.empty()) {
-        cout << "Error: Image does not exist" << endl;
-        exit(1);
-    }
-
-    imwrite(path, img);
+    cout << "reached 53" << endl;
+    //imwrite(path, img);
     struct Img* output = (struct Img*) malloc(sizeof(struct Img));
-    strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
+    cout << "reached 56" << endl;
+    output->i = (Mat*) malloc(sizeof(img));
+    cout << "reached 58" << endl;
+    *(output->i) = imread(imageName, CV_LOAD_IMAGE_COLOR);
+    cout << "reached 60" << endl;
+    //strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
     return output;
 }
 
 extern "C" int save(char location[], struct Img* input)
 {
-    string path = string("tempDir/") + string(input->name);
-    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
-
-    imwrite(location, img);
+    //string path = string("tempDir/") + string(input->name);
+    //Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat* img = input->i;
+    cout << "reached here" << endl;
+    imwrite(location, *img);
     return 1;
 }
 
 extern "C" int cleanup(struct Img* input)
 {
+    free(input->i);
     free(input);
     return 1;
 }
