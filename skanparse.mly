@@ -59,13 +59,20 @@ fdecl:
 
 /* formals_opt */
 formals_opt:
-    /*nothing*/  { [] }
-  | formals_list { $1 }
+    /*nothing*/      { [] }
+  | formals_list     { $1 }
+  /*| inf_formals_list { $1 }*/
 
 formals_list:
     typ ID                    { [($1, $2)]     }
-  | typ ID COMMA formals_list { ($1, $2) :: $4 }
+  | formals_list COMMA typ ID { ($3, $4) :: $1 }
+  | ID                        { [AnyType, $1]   }
+  | formals_list COMMA ID     { (AnyType, $3) :: $1 }
 
+/*inf_formals_list:
+  | ID                         { [AnyType, $1] }
+  | inf_formals_list COMMA ID  { (AnyType, $3) :: $1}
+*/
 stmt_list:
     /* nothing */   { []     }
   | stmt stmt_list  { $1::$2 }
@@ -73,6 +80,7 @@ stmt_list:
 stmt:                            
   | typ ID SEMI                             { Local($1, $2,  NoExpr) }
   | typ ID ASSIGN expr SEMI                 { Local($1, $2, $4)      } 
+  | ID ASSIGN expr SEMI                     { Infer($1, $3)          }
   | expr SEMI                               { Expr $1                }
   | RETURN expr SEMI                        { Return $2              }
   | LBRACE stmt_list RBRACE                 { Block $2               }
@@ -94,7 +102,7 @@ expr:
   | expr LT     expr   { Binop($1, Less,  $3)   }
   | expr AND    expr   { Binop($1, And,   $3)   }
   | expr OR     expr   { Binop($1, Or,    $3)   }
-  | ID ASSIGN expr     { Assign($1, $3)         }
+  /*| ID ASSIGN expr     { Assign($1, $3)         }*/
   | LPAREN expr RPAREN { $2                     }
   /* call */
   | ID LPAREN args_opt RPAREN { Call ($1, $3)  }

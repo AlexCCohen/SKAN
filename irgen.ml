@@ -48,6 +48,7 @@ let translate functions =
     | A.Img    -> struct_img_t
     | A.String -> str_t
     | A.Void   -> void_t
+    | A.AnyType -> raise (Failure ("AnyType not allowed"))
   in
 
  (* Built-in functions *)
@@ -182,8 +183,8 @@ let print_func : L.llvalue =
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SStringLit s -> L.build_global_stringptr s "str" builder
       | SId s       -> L.build_load (lookup s locals_map) s builder
-      | SAssign (s, e) -> let e' = build_expr builder locals_map e in
-        ignore(L.build_store e' (lookup s locals_map) builder); e'
+      (*| SAssign (s, e) -> let e' = build_expr builder locals_map e in
+        ignore(L.build_store e' (lookup s locals_map) builder); e'*)
       | SBinop (e1, op, e2) ->
         let e1' = build_expr builder locals_map e1
         and e2' = build_expr builder locals_map e2 in
@@ -285,7 +286,10 @@ let print_func : L.llvalue =
           let new_local_map = StringMap.add varname local_var locals_map in
           ignore (L.build_store (build_expr builder new_local_map e) local_var builder);
           (builder, new_local_map)
-
+      | SAssign(typ, var, e) ->
+        let e' = build_expr builder locals_map e in
+        ignore(L.build_store e' (lookup var locals_map) builder);
+        (builder, locals_map)
     in
     (* Build the code for each statement in the function *)
     let func_builder = build_stmt (builder, formals_map) (SBlock fdecl.sbody) in
