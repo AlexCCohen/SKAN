@@ -1,7 +1,7 @@
--merge imgfun branch (s)
-- type inferencing (A)
-- error tests/fixing test script (N)
+- merge imgfun branch (s)
 - demo programs (s)
+- basic clean up code
+    - Put everything into src folder
 
 
 -report (K starting)
