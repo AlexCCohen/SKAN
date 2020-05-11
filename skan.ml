@@ -22,9 +22,10 @@ let () =
   let lexbuf = Lexing.from_channel !channel in
 
   let ast = Skanparse.program Scanner.token lexbuf in
+  let rast = Infer.resolve ast in
   match !action with
     Ast -> print_string (Ast.string_of_program ast)
-  | _ -> let sast = Semant.check ast in
+  | _ -> let sast = Semant.check rast in
     match !action with
       Ast     -> ()
     | Sast    -> print_string (Sast.string_of_sprogram sast)
