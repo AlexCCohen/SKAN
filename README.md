@@ -14,7 +14,7 @@ Install all requirements using homebrew:
 
 ```brew install opencv@2```
 
-### SKAN
+### Run SKAN Programs
 
 Compile:
 
@@ -25,3 +25,8 @@ To compile and run {BASE}.sk:
 ```./run.sh {BASE].sk```
 
 ```./{BASE}.out```
+
+
+### Run Tester
+
+```python tester.py```
