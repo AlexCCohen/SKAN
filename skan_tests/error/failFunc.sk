@@ -1,0 +1,11 @@
+int foo(int a, int b) {
+    return a + b;
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int test = foo(a,b);
+    int failTest = foo(a); /* not enough arguments */
+    return 0;
+}

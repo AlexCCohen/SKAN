@@ -1,0 +1,9 @@
+int main()
+{
+  int i;
+  bool b;
+  int e;
+
+  i = 20;
+  b = true;
+  e = "false"; /* Fail: assigning a string to an int */

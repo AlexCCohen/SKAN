@@ -1,0 +1,16 @@
+bool fun(int a, bool b, string s, img i) {
+    a = 2;
+    b = true;
+    s = "hi";
+    i = load("test_fish.png");
+    return true;
+}
+
+int main() {
+    int x = 5;
+    bool i = true;
+    string st = "hello";
+    img z = load("test_fish.png");
+    fun(x, i, st, z);
+    return 0;
+}

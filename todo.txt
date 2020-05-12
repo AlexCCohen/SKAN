@@ -1,0 +1,22 @@
+- Merge imgfun branch (S)
+
+- Demo Programs:
+    - Image Features (S)
+    - Language Features (N)
+        - Type inference
+        - Grammer
+
+- Clean up code
+    - Put everything into src folder
+
+-Report:
+    - Intro (Semi-done)
+    - Language Tutorial (K)
+    - Architecture (A)
+    - Testing (N)
+    - Summary (K start, everyone)
+
+- Presentation
+    - Powerpoint
+    - Demonstration of .sk files
+    - Demos

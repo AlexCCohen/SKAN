@@ -1,0 +1,4 @@
+int main() {
+    string s = hi; /* needs "hi" to be recognized as a string */
+    return 0;
+}

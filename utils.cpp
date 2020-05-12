@@ -47,8 +47,14 @@ extern "C" struct Img* load(char imageName[])
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
 
+<<<<<<< HEAD
     if(img.empty()) {
         cout << "Error:" << imageName << " Image not found" << endl;
+=======
+    //check if img exists
+    if (img.empty()) {
+        cout << "Error: Image does not exist" << endl;
+>>>>>>> 8819dea9b86a889bd2cf5135986bc3ae6b0dca80
         exit(1);
     }
 

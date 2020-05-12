@@ -1,0 +1,9 @@
+int fun(bool a) {
+    bool b = a;
+    return 0;
+}
+
+int main() {
+    bool b = false;
+    fun(b);
+}
