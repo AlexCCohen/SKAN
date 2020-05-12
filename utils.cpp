@@ -1,8 +1,11 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/contrib/contrib.hpp>
+//#include "highgui.h"
 #include <iostream>
 #include <string>
-#include <filesystem>
+#include <sys/stat.h>
 
 using namespace cv;
 using namespace std;
@@ -37,15 +40,18 @@ extern "C" struct Img* load(char imageName[])
 {
     //make a folder
     //go inside folder and make temp variable name
-    if (!std::__fs::filesystem::is_directory("tempDir"))
-    {
-        std::__fs::filesystem::create_directory("tempDir");
-    }
+    mkdir("./temp_directory", 0777);
 
-    string path = string("tempDir/") + string(imageName);
+    string path = string("temp_directory/") + string(imageName);
 
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
+
+    if(img.empty()) {
+        cout << "Error:" << imageName << " Image not found" << endl;
+        exit(1);
+    }
+
     imwrite(path, img);
     struct Img* output = (struct Img*) malloc(sizeof(struct Img));
     strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
@@ -54,9 +60,8 @@ extern "C" struct Img* load(char imageName[])
 
 extern "C" int save(char location[], struct Img* input)
 {
-    string path = string("tempDir/") + string(input->name);
+    string path = string("temp_directory/") + string(input->name);
     Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
-
     imwrite(location, img);
     return 1;
 }
@@ -67,30 +72,130 @@ extern "C" int cleanup(struct Img* input)
     return 1;
 }
 
-/*extern "C" int load(char imgName[])
-{
-    Mat img;
-    img=imread("test_fish.png", CV_LOAD_IMAGE_COLOR);
+extern "C" struct Img* brighten(struct Img* input, int value) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
 
-    // Convert image to vector
-    vector<uchar> array;
-    if (img.isContinuous()) {
-        array.assign(img.data, img.data + img.total());
+    //modifications
+    img = img + value;
+
+    //output temp image
+    imwrite(path, img);
+    return input;
+}
+
+extern "C" struct Img* dilation(struct Img* input, int size, int shape) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    //Mat out = img;
+
+    //modifications
+    int seShape;
+    if(shape == 1) {
+        seShape = MORPH_ELLIPSE;
+    }
+    else if( shape == 2) {
+        seShape = MORPH_CROSS;
     }
     else {
-        for (int i = 0; i < img.rows; ++i) {
-            array.insert(array.end(), img.ptr<uchar>(i), img.ptr<uchar>(i)+img.cols);
-        }
+        seShape = MORPH_RECT;
     }
+    int seSize = size;
 
-    // Convert vector to image
-    Mat m = Mat(img.rows, img.cols, CV_8UC1);
-    memcpy(m.data, array.data(), array.size()*sizeof(uchar));
+    Mat se = getStructuringElement(seShape, Size(2*seSize+1, 2*seSize+1), Point(seSize, seSize));
 
-    namedWindow( "Display window", WINDOW_AUTOSIZE );
-    imshow( "Display window", m );
+    //dilate(img, out, se);
+    dilate(img,img,se);
 
-    waitKey(0);
-    cout << img.cols << endl;
-    return 0;
-}*/
+    //output temp image
+    imwrite(path, img);
+    return input;
+}
+
+extern "C" struct Img* sobel(struct Img* input) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+
+    //modifications
+    cvtColor(img, out, CV_BGR2GRAY);
+    Mat gx, gy;
+    Mat absgx, absgy;
+
+    Sobel(out, gx, CV_16S,1,0,3,1,0, BORDER_DEFAULT);
+    Sobel(out, gy, CV_16S,0,1,3,1,0, BORDER_DEFAULT);
+
+    convertScaleAbs(gx, absgx);
+    convertScaleAbs(gy, absgy);
+
+    addWeighted(absgx, 0.5, absgy, 0.5, 0, out);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
+
+extern "C" struct Img* threshold(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+
+    //modifications
+    cvtColor(img, out, CV_BGR2GRAY);
+
+    threshold(out, out, val, 255, 0);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
+
+extern "C" struct Img* gaussian(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+
+    //modifications
+    GaussianBlur(img, out, Size(val,val),0,0);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
+
+extern "C" struct Img* color(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+
+    //modifications
+    applyColorMap(img, out, val);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
+
+extern "C" struct Img* sharpen(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+    Mat laplac;
+    Mat grey;
+
+    //modifications
+    cvtColor(img, grey, CV_BGR2GRAY);
+    Laplacian(grey, laplac, CV_8U, 3, 1, 0, BORDER_DEFAULT);
+    addWeighted(grey, 1, laplac, val, 0, out);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}

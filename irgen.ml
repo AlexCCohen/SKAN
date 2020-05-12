@@ -105,6 +105,48 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
 
   let save_func : L.llvalue =
     L.declare_function "save" save_t the_module in
+
+  let dilation_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t; i32_t |] in
+  
+  let dilation_func : L.llvalue = 
+    L.declare_function "dilation" dilation_t the_module in
+  
+  let sobel_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t|] in
+    
+  let sobel_func : L.llvalue = 
+    L.declare_function "sobel" sobel_t the_module in
+  
+  let threshold_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+      
+  let threshold_func : L.llvalue = 
+    L.declare_function "threshold" threshold_t the_module in
+  
+  let gaussian_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+        
+  let gaussian_func : L.llvalue = 
+    L.declare_function "gaussian" gaussian_t the_module in
+  
+  let color_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+          
+  let color_func : L.llvalue = 
+    L.declare_function "color" color_t the_module in
+
+  let sharpen_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+          
+  let sharpen_func : L.llvalue = 
+    L.declare_function "sharpen" sharpen_t the_module in
   
   let cleanup_t : L.lltype =
     L.function_type i32_t
@@ -213,6 +255,24 @@ let print_func : L.llvalue =
       | SCall ("save", [e1; e2]) ->
         L.build_call save_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
           "save" builder
+      | SCall ("dilation", [e1; e2; e3]) ->
+        L.build_call dilation_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2); (build_expr builder locals_map e3) |]
+          "dilation" builder 
+      | SCall ("sobel", [e]) ->
+        L.build_call sobel_func [| (build_expr builder locals_map e) |]
+          "sobel" builder 
+      | SCall ("threshold", [e1; e2]) ->
+        L.build_call threshold_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "threshold" builder
+      | SCall ("gaussian", [e1; e2]) ->
+        L.build_call gaussian_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "gaussian" builder 
+      | SCall ("color", [e1; e2]) ->
+        L.build_call color_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "color" builder
+      | SCall ("sharpen", [e1; e2]) ->
+        L.build_call sharpen_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "sharpen" builder
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
