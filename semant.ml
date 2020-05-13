@@ -5,6 +5,7 @@
 
 open Ast
 open Sast
+open Builtins
 
 module StringMap = Map.Make(String)
 
@@ -29,17 +30,7 @@ let check functions =
 
   let built_in_decls =
     let add_bind map func_def = StringMap.add func_def.fname func_def map
-    in List.fold_left add_bind StringMap.empty [
-      { rtyp = Int; fname = "print"; formals = [(Int, "x")]; body = [] };
-      { rtyp = Int; fname= "print_int"; formals = [(Int, "x")]; body = [] };
-      { rtyp = String; fname= "print_str"; formals = [(String, "x")]; body = [] };
-      { rtyp = Img; fname= "load"; formals = [(String, "x")]; body = [] };
-      (* return 0 if successful, should be void but placeholder till make void type *)
-      { rtyp = Int; fname= "save"; formals = [(String, "name"); (Img, "x")]; body = [] };
-      { rtyp = Int; fname= "cleanup"; formals = [(Img, "x")]; body = [] };
-      { rtyp = Img; fname = "brighten"; formals = [(Img, "x"); (Int, "b")]; body = [] };
-      { rtyp = Img; fname = "copy"; formals = [(Img, "x")]; body = [] };
-    ]
+    in List.fold_left add_bind StringMap.empty built_ins
   in
 
   (* Add function name to symbol table *)
@@ -80,11 +71,12 @@ let check functions =
       | (String, String) -> lvaluet
       | (Img, Img) -> lvaluet
       | (_, Void) -> lvaluet
+      | (AnyType, x) | (x, AnyType) -> x
       | _ -> raise (Failure err)
     in
 
     (* Build local symbol table of variables for this function *)
-    let formals = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
+    let formals = List.fold_left (fun m (ty, name) -> if ty != AnyType then StringMap.add name ty m else raise (Failure "Unused function"))
         StringMap.empty func.formals
     in
 
@@ -100,13 +92,13 @@ let check functions =
       | BoolLit l -> (Bool, SBoolLit l)
       | StringLit l -> (String, SStringLit l)
       | Id var -> (type_of_identifier var symbols, SId var)
-      | Assign(var, e) as ex ->
+      (*| Assign(var, e) as ex ->
         let lt = type_of_identifier var symbols
         and (rt, e') = check_expr symbols e in
         let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
-        (check_assign lt rt err, SAssign(var, (rt, e')))
+        (check_assign lt rt err, SAssign(var, (rt, e')))*)
       | Brighten(var, e) as ex ->
         let lt = type_of_identifier var symbols
         and (rt, e') = check_expr symbols e in
@@ -127,7 +119,7 @@ let check functions =
         if t1 = t2 then
           (* Determine expression type based on operator and operand types *)
           let t = match op with
-              Add | Sub | Mod when t1 = Int -> Int
+              Add | Sub | Mod | Divide | Mult when t1 = Int -> Int
             | Equal | Neq -> Bool
             | Less when t1 = Int -> Bool
             | And | Or when t1 = Bool -> Bool
@@ -198,11 +190,23 @@ let check functions =
                   | Bool -> (Bool, SBoolLit true)
                   | String -> (String, SStringLit "")
                   | Img -> (Img, SNoExpr) (***** FIX *****)
-                  | Void -> (Void, SNoExpr)) in
+                  | Void -> (Void, SNoExpr)
+                  | AnyType -> (AnyType, SNoExpr)) in
                   (SLocal (typ, varname, init_noexpr typ), new_table)
             | _ -> (SLocal (typ, varname, check_expr symbols e), new_table)
           else raise (Failure ("Variable type " ^ string_of_typ typ ^ " does not match expression type " ^ string_of_typ t))
         (* Need to check typ = type of e, then add new var to symbols table returned *)    
+      | Infer (varname, e) ->
+        if StringMap.mem varname symbols then
+          (let lt = type_of_identifier varname symbols
+            and (rt, e') = check_expr symbols e in
+            let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
+                      string_of_typ rt ^ " in " ^ string_of_expr e
+            in
+            (SAssign (check_assign lt rt err, varname, (rt, e')), symbols))
+        else
+         let (t,_) = check_expr symbols e in
+         check_stmt symbols (Local(t, varname, e))
   in
   (* body of check_func *)
   { srtyp = func.rtyp;

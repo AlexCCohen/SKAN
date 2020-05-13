@@ -1,0 +1,4 @@
+int main() {
+    int i = "not_an_int"; /* type int needs to be an integer */
+    return 0;
+}

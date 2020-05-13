@@ -20,6 +20,8 @@ rule token = parse
 | '+'      { PLUS }
 | '-'      { MINUS }
 | "mod"    { MOD }
+| '/'      { DIVIDE }
+| '*'      { MULT }
 | '='      { ASSIGN }
 | "+="     { BRIGHTEN }
 | "=="     { EQ }

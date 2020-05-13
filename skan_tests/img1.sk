@@ -1,0 +1,4 @@
+int main() {
+    img x = load("test_fish.png");
+    return 0;
+}

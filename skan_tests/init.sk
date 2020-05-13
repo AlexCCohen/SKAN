@@ -1,0 +1,4 @@
+int main() {
+    img i;
+    return 0;
+}

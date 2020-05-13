@@ -1,0 +1,12 @@
+int saveas(img i, string b) {
+    save(b,i);
+    return 1;
+
+}
+
+int main() {
+
+    img i = load("test_fish.png");
+    int j = saveas(i, "output.png");
+    return 0;
+}

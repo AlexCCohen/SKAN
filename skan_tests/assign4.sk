@@ -1,0 +1,6 @@
+int main() {
+    string x = "hello";
+    string y = "";
+    y = x;
+    return 0;
+}
