@@ -165,6 +165,12 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let display_func : L.llvalue =
     L.declare_function "display" cleanup_t the_module in
   
+  let brighten_t : L.lltype =
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+  
+  let brighten_func : L.llvalue =
+    L.declare_function "brighten" brighten_t the_module in
 
 (*  SECTION 4b: Calling C's print function 
 let print_func : L.llvalue =
@@ -306,6 +312,10 @@ let print_func : L.llvalue =
          | String -> L.build_global_stringptr "" "str" builder
          | Img ->  L.build_call emptyInitImg [| |] "" builder
         |  _ -> L.const_int i32_t 0)
+      | SBrighten (s, e) ->
+        let s' = L.build_load (lookup s locals_map) s builder in
+        ignore(L.build_call brighten_func [| s'; (build_expr builder locals_map e) |]
+          "brighten" builder); s'
     in
 
     (* LLVM insists each basic block end with exactly one "terminator"

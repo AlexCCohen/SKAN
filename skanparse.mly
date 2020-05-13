@@ -4,7 +4,7 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD DIVIDE MULT
+%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD DIVIDE MULT BRIGHTEN
 %token EQ NEQ LT AND OR
 %token IF ELSE WHILE INT BOOL IMG STRING VOID
 
@@ -21,7 +21,7 @@ open Ast
 %start program
 %type <Ast.program> program
 
-%right ASSIGN
+%right ASSIGN BRIGHTEN
 %left OR
 %left AND
 %left EQ NEQ
@@ -107,7 +107,8 @@ expr:
   /*| ID ASSIGN expr     { Assign($1, $3)         }*/
   | LPAREN expr RPAREN { $2                     }
   /* call */
-  | ID LPAREN args_opt RPAREN { Call ($1, $3)  }
+  | ID LPAREN args_opt RPAREN { Call ($1, $3)   }
+  | ID BRIGHTEN expr   { Brighten($1, $3)       }
 
 /* args_opt*/
 args_opt:

@@ -99,7 +99,6 @@ let check functions =
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')))*)
-
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr symbols e1
         and (t2, e2') = check_expr symbols e2 in

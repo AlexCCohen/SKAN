@@ -14,6 +14,7 @@ and sx =
   (* call *)
   | SCall of string * sexpr list
   | SNoExpr
+  | SBrighten of string * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -52,6 +53,7 @@ let rec string_of_sexpr (t, e) =
       | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
       | SNoExpr -> "NoExpr"
+      | SBrighten(v, e) -> v ^ " = " ^ string_of_sexpr e
     ) ^ ")"
 
 

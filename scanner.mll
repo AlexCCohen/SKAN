@@ -23,6 +23,7 @@ rule token = parse
 | '/'      { DIVIDE }
 | '*'      { MULT }
 | '='      { ASSIGN }
+| "+="     { BRIGHTEN }
 | "=="     { EQ }
 | "!="     { NEQ }
 | '<'      { LT }
