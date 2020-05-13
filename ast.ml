@@ -11,6 +11,8 @@ type op =
   | And
   | Or
   | Mod
+  | Divide
+  | Mult
 
 (* New Type Img *)
 type typ = 
@@ -68,6 +70,8 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
   | Mod -> "mod"
+  | Divide -> "/"
+  | Mult -> "*"
 
 
 let string_of_typ = function

@@ -56,7 +56,7 @@ let resolve functions =
       if t1 = t2 then
         (* Determine expression type based on operator and operand types *)
         let t = match op with
-            Add | Sub | Mod when t1 = Int -> Int
+            Add | Sub | Mod | Divide | Mult when t1 = Int -> Int
           | Equal | Neq -> Bool
           | Less when t1 = Int -> Bool
           | And | Or when t1 = Bool -> Bool
@@ -120,7 +120,7 @@ let resolve functions =
     | Infer (varname, e) ->
       (* Assignment, don't care *)
       if StringMap.mem varname v_map then
-        (f_map, v_map)
+        check_expr f_map v_map e
       (* Inferred initialization *)
       else
         let (new_f, new_v) = check_expr f_map v_map e in
