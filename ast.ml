@@ -11,6 +11,8 @@ type op =
   | And
   | Or
   | Mod
+  | Divide
+  | Mult
 
 (* New Type Img *)
 type typ = 
@@ -19,6 +21,7 @@ type typ =
   | String
   | Img
   | Void
+  | AnyType
 
 type expr =
     Literal of int
@@ -29,7 +32,7 @@ type expr =
   | StringLit of string
   | Id of string
   | Binop of expr * op * expr
-  | Assign of string * expr
+  (*| Assign of string * expr*)
   (* function call *)
   | Call of string * expr list
   | NoExpr
@@ -43,6 +46,7 @@ type stmt =
   (* return *)
   | Return of expr
   | Local of typ * string * expr
+  | Infer of string * expr
 
 (* int x: name binding *)
 type bind = typ * string
@@ -67,6 +71,8 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
   | Mod -> "mod"
+  | Divide -> "/"
+  | Mult -> "*"
 
 
 let string_of_typ = function
@@ -75,6 +81,7 @@ let string_of_typ = function
   | Img -> "img"
   | String -> "string"
   | Void -> "void"
+  | AnyType -> "anytype"
 
 
 let rec string_of_expr = function
@@ -86,7 +93,7 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+  (*| Assign(v, e) -> v ^ " = " ^ string_of_expr e*)
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | NoExpr -> "NoExpr"
@@ -107,6 +114,7 @@ let rec string_of_stmt = function
       string_of_typ t ^ " " ^ s ^ ";\n"
     (* Local assign case *)
     else string_of_typ t ^ " " ^ s ^ " = " ^ string_of_expr e ^ ";\n"
+  | Infer(s, e) -> s ^ " = " ^ string_of_expr e ^ ";\n"
 
 
 let string_of_fdecl fdecl =

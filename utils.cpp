@@ -5,7 +5,6 @@
 //#include "highgui.h"
 #include <iostream>
 #include <string>
-//#include <filesystem>
 #include <sys/stat.h>
 
 using namespace cv;
@@ -42,15 +41,18 @@ extern "C" struct Img* load(char imageName[])
     //make a folder
     //go inside folder and make temp variable name
     mkdir("./temp_directory", 0777);
-    /*if (!std::__fs::filesystem::is_directory("tempDir"))
-    {
-        std::__fs::filesystem::create_directory("tempDir");
-    }*/
 
     string path = string("temp_directory/") + string(imageName);
 
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
+
+    //check if img exists
+    if (img.empty()) {
+        cout << "Error: Image does not exist" << endl;
+        exit(1);
+    }
+
     imwrite(path, img);
     struct Img* output = (struct Img*) malloc(sizeof(struct Img));
     strcpy(output->name, imageName);  // Saves imageName without 'tempDir/'
@@ -62,13 +64,22 @@ extern "C" int save(char location[], struct Img* input)
     string path = string("temp_directory/") + string(input->name);
     Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
     imwrite(location, img);
-    return 1;
+    return 0;
+}
+
+extern "C" int display(struct Img* input) {
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    namedWindow( "Display window", WINDOW_AUTOSIZE ); // Create a window for display.
+    imshow( "Display window", img ); // Show our image inside it.
+    waitKey(0); 
+    return 0;
 }
 
 extern "C" int cleanup(struct Img* input)
 {
     free(input);
-    return 1;
+    return 0;
 }
 
 extern "C" struct Img* brighten(struct Img* input, int value) {
@@ -83,15 +94,6 @@ extern "C" struct Img* brighten(struct Img* input, int value) {
     imwrite(path, img);
     return input;
 }
-
-/*extern "C" int dilation(char location[], struct Img* input)
-{
-    string path = string("temp_directory/") + string(input->name);
-    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
-
-    imwrite(location, img);
-    return 1;
-}*/
 
 extern "C" struct Img* dilation(struct Img* input, int size, int shape) {
     //read in temp image
@@ -190,30 +192,34 @@ extern "C" struct Img* color(struct Img* input, int val) {
     return input;
 }
 
-/*extern "C" int load(char imgName[])
-{
-    Mat img;
-    img=imread("test_fish.png", CV_LOAD_IMAGE_COLOR);
+extern "C" struct Img* sharpen(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+    Mat laplac;
+    Mat grey;
 
-    // Convert image to vector
-    vector<uchar> array;
-    if (img.isContinuous()) {
-        array.assign(img.data, img.data + img.total());
-    }
-    else {
-        for (int i = 0; i < img.rows; ++i) {
-            array.insert(array.end(), img.ptr<uchar>(i), img.ptr<uchar>(i)+img.cols);
-        }
-    }
+    //modifications
+    cvtColor(img, grey, CV_BGR2GRAY);
+    Laplacian(grey, laplac, CV_8U, 3, 1, 0, BORDER_DEFAULT);
+    addWeighted(grey, 1, laplac, val/100, 0, out);
 
-    // Convert vector to image
-    Mat m = Mat(img.rows, img.cols, CV_8UC1);
-    memcpy(m.data, array.data(), array.size()*sizeof(uchar));
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
 
-    namedWindow( "Display window", WINDOW_AUTOSIZE );
-    imshow( "Display window", m );
+extern "C" struct Img* median(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
 
-    waitKey(0);
-    cout << img.cols << endl;
-    return 0;
-}*/
+    //modifications
+    medianBlur(img, out, val);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}

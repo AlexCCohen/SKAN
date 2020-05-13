@@ -1,6 +1,6 @@
 # SKAN
 
-## How to Compile and Run SKAN/MicroC
+## How to Compile and Run SKAN
 
 Install all requirements using homebrew:
 
@@ -12,7 +12,9 @@ Install all requirements using homebrew:
 
 ```opam install llvm```
 
-### SKAN
+```brew install opencv@2```
+
+### Run SKAN Programs
 
 Compile:
 
@@ -24,20 +26,7 @@ To compile and run {BASE}.sk:
 
 ```./{BASE}.out```
 
-### MicroC 
 
-Compile everything:
+### Run Tester
 
-```ocamlbuild -pkgs llvm microc.native```
-
-To compile and run example.mc:
-
-```./microc.native -l example.mc > example.out```
-
-```/usr/local/opt/llvm/bin/lli example.out```
-
-## Resources
-
-http://www.cs.columbia.edu/~sedwards/classes/2018/4115-fall/index.html
-
-https://llvm.moe/ocaml-7.0/Llvm.html
+```python tester.py```

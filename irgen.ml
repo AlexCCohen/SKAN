@@ -48,6 +48,7 @@ let translate functions =
     | A.Img    -> struct_img_t
     | A.String -> str_t
     | A.Void   -> void_t
+    | A.AnyType -> raise (Failure ("AnyType not allowed"))
   in
 
  (* Built-in functions *)
@@ -108,37 +109,51 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let dilation_t : L.lltype = 
     L.function_type (struct_img_t)
     [| struct_img_t; i32_t; i32_t |] in
-
+  
   let dilation_func : L.llvalue = 
     L.declare_function "dilation" dilation_t the_module in
-
+  
   let sobel_t : L.lltype = 
     L.function_type (struct_img_t)
     [| struct_img_t|] in
-  
+    
   let sobel_func : L.llvalue = 
     L.declare_function "sobel" sobel_t the_module in
-
+  
   let threshold_t : L.lltype = 
     L.function_type (struct_img_t)
     [| struct_img_t; i32_t |] in
-    
+      
   let threshold_func : L.llvalue = 
     L.declare_function "threshold" threshold_t the_module in
-
+  
   let gaussian_t : L.lltype = 
     L.function_type (struct_img_t)
     [| struct_img_t; i32_t |] in
-      
+        
   let gaussian_func : L.llvalue = 
     L.declare_function "gaussian" gaussian_t the_module in
-
+  
   let color_t : L.lltype = 
     L.function_type (struct_img_t)
     [| struct_img_t; i32_t |] in
-        
+          
   let color_func : L.llvalue = 
     L.declare_function "color" color_t the_module in
+
+  let sharpen_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+          
+  let sharpen_func : L.llvalue = 
+    L.declare_function "sharpen" sharpen_t the_module in
+
+  let median_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+          
+  let median_func : L.llvalue = 
+    L.declare_function "median" median_t the_module in
   
   let cleanup_t : L.lltype =
     L.function_type i32_t
@@ -146,6 +161,9 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   
   let cleanup_func : L.llvalue =
     L.declare_function "cleanup" cleanup_t the_module in
+
+  let display_func : L.llvalue =
+    L.declare_function "display" cleanup_t the_module in
   
   let brighten_t : L.lltype =
     L.function_type (struct_img_t)
@@ -223,8 +241,8 @@ let print_func : L.llvalue =
       | SBoolLit b  -> L.const_int i1_t (if b then 1 else 0)
       | SStringLit s -> L.build_global_stringptr s "str" builder
       | SId s       -> L.build_load (lookup s locals_map) s builder
-      | SAssign (s, e) -> let e' = build_expr builder locals_map e in
-        ignore(L.build_store e' (lookup s locals_map) builder); e'
+      (*| SAssign (s, e) -> let e' = build_expr builder locals_map e in
+        ignore(L.build_store e' (lookup s locals_map) builder); e'*)
       | SBinop (e1, op, e2) ->
         let e1' = build_expr builder locals_map e1
         and e2' = build_expr builder locals_map e2 in
@@ -237,6 +255,8 @@ let print_func : L.llvalue =
          | A.Neq     -> L.build_icmp L.Icmp.Ne
          | A.Less    -> L.build_icmp L.Icmp.Slt
          | A.Mod     -> L.build_urem
+         | A.Divide  -> L.build_udiv
+         | A.Mult    -> L.build_mul
         ) e1' e2' "tmp" builder
       | SCall ("print", [e]) ->
         L.build_call printf_func [| int_format_str ; (build_expr builder locals_map e) |]
@@ -265,13 +285,21 @@ let print_func : L.llvalue =
       | SCall ("gaussian", [e1; e2]) ->
         L.build_call gaussian_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
           "gaussian" builder 
-
       | SCall ("color", [e1; e2]) ->
         L.build_call color_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
           "color" builder
+      | SCall ("sharpen", [e1; e2]) ->
+        L.build_call sharpen_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "sharpen" builder
+      | SCall ("median", [e1; e2]) ->
+        L.build_call median_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "median" builder
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
+      | SCall ("display", [e]) ->
+        L.build_call display_func [| (build_expr builder locals_map e) |]
+          "display" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (build_expr builder locals_map) (List.rev args)) in
@@ -346,7 +374,10 @@ let print_func : L.llvalue =
           let new_local_map = StringMap.add varname local_var locals_map in
           ignore (L.build_store (build_expr builder new_local_map e) local_var builder);
           (builder, new_local_map)
-
+      | SAssign(typ, var, e) ->
+        let e' = build_expr builder locals_map e in
+        ignore(L.build_store e' (lookup var locals_map) builder);
+        (builder, locals_map)
     in
     (* Build the code for each statement in the function *)
     let func_builder = build_stmt (builder, formals_map) (SBlock fdecl.sbody) in

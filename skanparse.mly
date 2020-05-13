@@ -4,7 +4,7 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD BRIGHTEN
+%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN MOD DIVIDE MULT BRIGHTEN
 %token EQ NEQ LT AND OR
 %token IF ELSE WHILE INT BOOL IMG STRING VOID
 
@@ -26,7 +26,7 @@ open Ast
 %left AND
 %left EQ NEQ
 %left LT
-%left PLUS MINUS MOD
+%left PLUS MINUS MOD DIVIDE MULT
 
 %%
 
@@ -59,13 +59,20 @@ fdecl:
 
 /* formals_opt */
 formals_opt:
-    /*nothing*/  { [] }
-  | formals_list { $1 }
+    /*nothing*/      { [] }
+  | formals_list     { $1 }
+  /*| inf_formals_list { $1 }*/
 
 formals_list:
     typ ID                    { [($1, $2)]     }
-  | formals_list COMMA typ ID { ($3, $4) :: $1 }
+  | typ ID COMMA formals_list { ($1, $2) :: $4 }
+  | ID                        { [AnyType, $1]   }
+  | ID COMMA formals_list     { (AnyType, $1) :: $3 }
 
+/*inf_formals_list:
+  | ID                         { [AnyType, $1] }
+  | inf_formals_list COMMA ID  { (AnyType, $3) :: $1}
+*/
 stmt_list:
     /* nothing */   { []     }
   | stmt stmt_list  { $1::$2 }
@@ -73,13 +80,14 @@ stmt_list:
 stmt:                            
   | typ ID SEMI                             { Local($1, $2,  NoExpr) }
   | typ ID ASSIGN expr SEMI                 { Local($1, $2, $4)      } 
+  | ID ASSIGN expr SEMI                     { Infer($1, $3)          }
   | expr SEMI                               { Expr $1                }
   | RETURN expr SEMI                        { Return $2              }
   | LBRACE stmt_list RBRACE                 { Block $2               }
   /* if (condition) { block1} else {block2} */
   /* if (condition) stmt else stmt */
   | IF LPAREN expr RPAREN stmt ELSE stmt    { If($3, $5, $7)         }
-  | WHILE LPAREN expr RPAREN stmt           { While($3, $5)          }
+  | WHILE LPAREN expr RPAREN stmt      { While($3, $5)          }
 
 expr:
     LITERAL            { Literal($1)            }
@@ -89,12 +97,14 @@ expr:
   | expr PLUS   expr   { Binop($1, Add,   $3)   }
   | expr MINUS  expr   { Binop($1, Sub,   $3)   }
   | expr MOD    expr   { Binop ($1, Mod, $3)    }
+  | expr DIVIDE expr   { Binop ($1, Divide, $3) }
+  | expr MULT expr { Binop ($1, Mult, $3)   }
   | expr EQ     expr   { Binop($1, Equal, $3)   }
   | expr NEQ    expr   { Binop($1, Neq, $3)     }
   | expr LT     expr   { Binop($1, Less,  $3)   }
   | expr AND    expr   { Binop($1, And,   $3)   }
   | expr OR     expr   { Binop($1, Or,    $3)   }
-  | ID ASSIGN expr     { Assign($1, $3)         }
+  /*| ID ASSIGN expr     { Assign($1, $3)         }*/
   | LPAREN expr RPAREN { $2                     }
   /* call */
   | ID LPAREN args_opt RPAREN { Call ($1, $3)   }

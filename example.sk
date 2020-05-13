@@ -1,5 +1,5 @@
 /* GCD Algorithm */
-int gcd(int a, int b) {
+int gcd(a, b) {
   while (a != b) {
     if (b < a) a = a - b;
     else b = b - a;
@@ -8,28 +8,32 @@ int gcd(int a, int b) {
 }
 
 /* Test mod operator */
-int mod_test(int x, int y) {
+int mod_test(int x, y) {
   int z;
-  z = 6 mod 5;
+  z = 7 mod 6;
   print(z);
   print(4 mod 3);
   return x mod y;
 }
 
 /* Test string type and print_str function */
-int string_test(string s) {
-  string x;
+int string_test(s) {
   x = s;
   print_str(x);
   print_str("hi");
   return 0;
 }
 
+/*int fn(a, b) {
+
+}*/
+
 int main() {
-  int x;
+  /*int x;*/
   int y;
   x = 2;
   y = 14;
+  gcd(x,y);
   print(gcd(x,y));
 
   int a = 9;
@@ -42,32 +46,46 @@ int main() {
   c = "hello";
   string_test(c);
 
+  img i = load("test_fish.png");
+  img k = i;
+  save("./results/new_fish2.png", k);
+  cleanup(i);
+
   img i2 = load("Lake.jpg");
   dilation(i2, 10, 1);
-  save("dilated.png", i2);
+  save("./results/dilated.png", i2);
+  cleanup(i2);
 
   img i3 = load("test_fish.png");
   sobel(i3);
-  save("sobel.png", i3);
+  save("./results/sobel.png", i3);
+  cleanup(i3);
 
   img i4 = load("Lake.jpg");
   threshold(i4, 110);
-  save("threshold.png", i4);
+  save("./results/threshold.png", i4);
+  cleanup(i4);
 
   img i5 = load("test_fish.png");
   gaussian(i5, 25);
-  save("gauss.png", i5);
+  save("./results/gauss.png", i5);
+  cleanup(i5);
 
   img i6 = load("test_fish.png");
   sobel(i6);
   color(i6, 3);
-  save("color.png", i6);
+  save("./results/color.png", i6);
+  cleanup(i6);
 
   img i7 = load("Lake.jpg");
   color(i7,5);
-  save("color2.png", i7);
+  save("./results/color2.png", i7);
+  cleanup(i7);
 
-  cleanup(i2);
+  img i8 = load("test_fish.png");
+  sharpen(i8,5);
+  save("./results/laplac.png", i8);
+  cleanup(i8);
 
   return 0;
 }

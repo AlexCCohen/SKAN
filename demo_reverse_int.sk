@@ -1,0 +1,36 @@
+int mult(a, b){
+	i=1;
+	res=a;
+	while(i<b) {
+		res=res+a;
+		i=i+1;
+	}
+	return res;
+}
+int reverse(a, b) {
+    if(a < 0) {
+    	a=0-a;
+    	b=true;
+    } 
+    else b = false; 
+
+    res = 0;
+    p = a;
+    while (0<p) {
+    	m=p mod 10;
+    	p=p/10;
+    	res = mult(res, 10) + m;
+    }
+    if (b==true) res = 0 -res;
+    else res=res;
+
+    return res;
+}
+
+int main() {
+    reverse_this = 1089;
+    flag = false;
+    value=reverse(reverse_this,flag);
+    print(value);
+    return 0;
+}

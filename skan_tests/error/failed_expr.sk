@@ -1,0 +1,7 @@
+
+int main() {
+    int a= 1;
+    bool b=true;
+    int c= a +b; /*bool +int Error */
+    return 0;
+}

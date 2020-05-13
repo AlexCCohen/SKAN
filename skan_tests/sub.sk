@@ -1,0 +1,8 @@
+int main(){
+    int x=100;
+    int y=39;
+    int sub;
+    sub = x - y;
+    print(sub);
+    return 0;
+}

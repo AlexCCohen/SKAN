@@ -1,0 +1,4 @@
+int main() {
+    s = "hello";
+    return 0;
+}
