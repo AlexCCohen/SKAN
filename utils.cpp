@@ -47,14 +47,9 @@ extern "C" struct Img* load(char imageName[])
     Mat img;
     img = imread(imageName, CV_LOAD_IMAGE_COLOR);
 
-<<<<<<< HEAD
-    if(img.empty()) {
-        cout << "Error:" << imageName << " Image not found" << endl;
-=======
     //check if img exists
     if (img.empty()) {
         cout << "Error: Image does not exist" << endl;
->>>>>>> 8819dea9b86a889bd2cf5135986bc3ae6b0dca80
         exit(1);
     }
 
@@ -199,7 +194,21 @@ extern "C" struct Img* sharpen(struct Img* input, int val) {
     //modifications
     cvtColor(img, grey, CV_BGR2GRAY);
     Laplacian(grey, laplac, CV_8U, 3, 1, 0, BORDER_DEFAULT);
-    addWeighted(grey, 1, laplac, val, 0, out);
+    addWeighted(grey, 1, laplac, val/100, 0, out);
+
+    //output temp image
+    imwrite(path, out);
+    return input;
+}
+
+extern "C" struct Img* median(struct Img* input, int val) {
+    //read in temp image
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    Mat out;
+
+    //modifications
+    medianBlur(img, out, val);
 
     //output temp image
     imwrite(path, out);

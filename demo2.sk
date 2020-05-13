@@ -1,0 +1,44 @@
+int imgalgo(img xray) {
+
+  /* denoising */
+  sharpen(xray, 0);
+  median(xray, 5);
+
+  save("xray1.png", xray);
+  save("./results/xray1.png", xray);
+
+  /* low pass filter and 1st derivative for edges */
+  gaussian(xray, 5);
+  sobel(xray);
+  save("./results/xray2.png", xray);
+
+  /* thresholding */
+  threshold(xray, 45);
+  save("./results/xray3.png", xray);
+
+  /* bold edge information */
+  dilation(xray, 3, 2);
+  save("./results/xray4.png", xray);
+
+  /* color xray */
+  img xray2 = load("xray1.png");
+  color(xray2, 2);
+  save("./results/xray5.png", xray2);
+
+  /* cleanup */
+  cleanup(xray);
+  cleanup(xray2);
+
+  return 0;
+}
+
+int main() {
+
+  /* read in image */
+  img xray = load("xray.jpg");
+
+  /* user defined image algorithm */
+  imgalgo(xray);
+
+  return 0;
+}

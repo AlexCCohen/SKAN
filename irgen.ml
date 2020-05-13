@@ -147,6 +147,13 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
           
   let sharpen_func : L.llvalue = 
     L.declare_function "sharpen" sharpen_t the_module in
+
+  let median_t : L.lltype = 
+    L.function_type (struct_img_t)
+    [| struct_img_t; i32_t |] in
+          
+  let median_func : L.llvalue = 
+    L.declare_function "median" median_t the_module in
   
   let cleanup_t : L.lltype =
     L.function_type i32_t
@@ -273,6 +280,9 @@ let print_func : L.llvalue =
       | SCall ("sharpen", [e1; e2]) ->
         L.build_call sharpen_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
           "sharpen" builder
+      | SCall ("median", [e1; e2]) ->
+        L.build_call median_func [| (build_expr builder locals_map e1); (build_expr builder locals_map e2) |]
+          "median" builder
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
