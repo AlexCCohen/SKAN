@@ -172,6 +172,13 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let brighten_func : L.llvalue =
     L.declare_function "brighten" brighten_t the_module in
 
+  let copy_t : L.lltype =
+    L.function_type (struct_img_t)
+    [| struct_img_t |] in
+
+  let copy_func : L.llvalue =
+    L.declare_function "copy" copy_t the_module in
+
 (*  SECTION 4b: Calling C's print function 
 let print_func : L.llvalue =
   L.declare_function "printf" print_t the_module
@@ -297,6 +304,9 @@ let print_func : L.llvalue =
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
+      | SCall ("copy", [e]) ->
+        L.build_call copy_func [| (build_expr builder locals_map e) |]
+          "copy" builder
       | SCall ("display", [e]) ->
         L.build_call display_func [| (build_expr builder locals_map e) |]
           "display" builder

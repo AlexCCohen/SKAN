@@ -47,9 +47,10 @@ int main() {
   string_test(c);
 
   img i = load("test_fish.png");
-  img k = i;
+  img k = copy(i);
   save("./results/new_fish2.png", k);
   cleanup(i);
+  cleanup(k);
 
   img i2 = load("Lake.jpg");
   dilation(i2, 10, 1);

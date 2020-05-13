@@ -1,0 +1,31 @@
+- Define purpose of language
+    - High-level image processing
+    - Not meant for developers who want granular access
+    - Meant for professionals to clean/manipulate images using built-ins
+    - Type inferencing and template functions improve usability/productivity
+
+S- Add built-in functions
+    - Add convolution function- conv(img, [x,y,z])
+- Assignment of images
+    [DONE] A- Copy functions-- C++ function that copies image within temp directory
+A- Add array type, 2D arrays
+    - Can just have list type, doesn't have to be real array
+A- Add *= [x,y,x] array, add 2D array option
+
+
+// 1. Clean up image storage
+// Add direct image interface
+
+strcut img{ Mat* pter; }
+
+do_to_image(img x, *5);
+x += 5
+x *= [5,0,0]
+x ^= 2
+invert(img)
+laplacian(img)
+
+Mat do_to_image(string fn){
+    for(every pixel)
+        fn(pixel);
+}
