@@ -64,13 +64,22 @@ extern "C" int save(char location[], struct Img* input)
     string path = string("temp_directory/") + string(input->name);
     Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
     imwrite(location, img);
-    return 1;
+    return 0;
+}
+
+extern "C" int display(struct Img* input) {
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread(path, CV_LOAD_IMAGE_COLOR);
+    namedWindow( "Display window", WINDOW_AUTOSIZE ); // Create a window for display.
+    imshow( "Display window", img ); // Show our image inside it.
+    waitKey(0); 
+    return 0;
 }
 
 extern "C" int cleanup(struct Img* input)
 {
     free(input);
-    return 1;
+    return 0;
 }
 
 extern "C" struct Img* brighten(struct Img* input, int value) {

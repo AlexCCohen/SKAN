@@ -161,6 +161,9 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   
   let cleanup_func : L.llvalue =
     L.declare_function "cleanup" cleanup_t the_module in
+
+  let display_func : L.llvalue =
+    L.declare_function "display" cleanup_t the_module in
   
 
 (*  SECTION 4b: Calling C's print function 
@@ -288,6 +291,9 @@ let print_func : L.llvalue =
       | SCall ("cleanup", [e]) ->
         L.build_call cleanup_func [| (build_expr builder locals_map e) |]
           "cleanup" builder
+      | SCall ("display", [e]) ->
+        L.build_call display_func [| (build_expr builder locals_map e) |]
+          "display" builder
       | SCall (f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let llargs = List.rev (List.map (build_expr builder locals_map) (List.rev args)) in

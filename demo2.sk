@@ -1,8 +1,12 @@
 int imgalgo(img xray) {
 
+  display(xray);
+
   /* denoising */
   sharpen(xray, 0);
   median(xray, 5);
+
+  display(xray);
 
   save("xray1.png", xray);
   save("./results/xray1.png", xray);
@@ -11,19 +15,23 @@ int imgalgo(img xray) {
   gaussian(xray, 5);
   sobel(xray);
   save("./results/xray2.png", xray);
+  display(xray);
 
   /* thresholding */
   threshold(xray, 45);
   save("./results/xray3.png", xray);
+  display(xray);
 
   /* bold edge information */
   dilation(xray, 3, 2);
   save("./results/xray4.png", xray);
+  display(xray);
 
   /* color xray */
   img xray2 = load("xray1.png");
   color(xray2, 2);
   save("./results/xray5.png", xray2);
+  display(xray2);
 
   /* cleanup */
   cleanup(xray);
