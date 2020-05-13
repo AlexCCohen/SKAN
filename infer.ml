@@ -68,6 +68,7 @@ let resolve functions =
     | Call(fname, args) ->
       (find_func fname).rtyp
     | NoExpr -> Void
+    | Brighten (_,_) -> Img
   in
 
   (* Check expr *)

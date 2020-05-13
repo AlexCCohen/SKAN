@@ -99,6 +99,15 @@ let check functions =
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')))*)
+      | Brighten(var, e) as ex ->
+        let lt = type_of_identifier var symbols
+        and (rt, e') = check_expr symbols e in
+        let err = "illegal brighten " ^ string_of_typ lt ^ " += " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr ex
+        in
+        if rt != Int || lt != Img then
+          raise(Failure err)
+        else (Img, SBrighten(var, (rt, e')))
       | Binop(e1, op, e2) as e ->
         let (t1, e1') = check_expr symbols e1
         and (t2, e2') = check_expr symbols e2 in
