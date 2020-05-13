@@ -16,4 +16,5 @@ let built_ins = [{ rtyp = Int; fname = "print"; formals = [(Int, "x")]; body = [
 { rtyp = Img; fname = "median"; formals = [(Img, "x"); (Int, "b")]; body = [] };
 { rtyp = Int; fname = "display"; formals = [(Img, "x")]; body =  [] };
 { rtyp = Img; fname = "brighten"; formals = [(Img, "x"); (Int, "b")]; body = [] };
+{ rtyp = Img; fname = "copy"; formals = [(Img, "x")]; body = [] };
  ]
