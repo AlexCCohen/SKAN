@@ -95,6 +95,20 @@ extern "C" struct Img* brighten(struct Img* input, int value) {
     return input;
 }
 
+extern "C" struct Img* copy(struct Img* input) {
+    string path = string("temp_directory/") + string(input->name);
+    Mat img = imread("temp_directory/test_fish.png", CV_LOAD_IMAGE_COLOR);
+
+    string new_img = string("copy_") + string(input->name);
+    string new_path = string("temp_directory/") + new_img;
+
+    imwrite(new_path, img);
+
+    struct Img* output = (struct Img*) malloc(sizeof(struct Img));
+    strcpy(output->name, new_img.c_str());  // Saves imageName without 'tempDir/'
+    return output;
+}
+
 extern "C" struct Img* dilation(struct Img* input, int size, int shape) {
     //read in temp image
     string path = string("temp_directory/") + string(input->name);
