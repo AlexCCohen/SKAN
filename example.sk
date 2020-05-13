@@ -48,6 +48,7 @@ int main() {
 
   img i = load("test_fish.png");
   img k = copy(i);
+  k += 10;
   save("./results/new_fish2.png", k);
   cleanup(i);
   cleanup(k);
