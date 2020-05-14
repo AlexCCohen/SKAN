@@ -1,3 +1,4 @@
+(* Test inference *)
 open Ast
 
 let _ =
