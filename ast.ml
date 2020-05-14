@@ -1,5 +1,3 @@
-(*TODO:
-  Imglit and data it holds *)
 (* Abstract Syntax Tree and functions for printing it *)
 
 type op =
@@ -14,7 +12,6 @@ type op =
   | Divide
   | Mult
 
-(* New Type Img *)
 type typ = 
     Int
   | Bool
@@ -26,14 +23,9 @@ type typ =
 type expr =
     Literal of int
   | BoolLit of bool
-  (* Img *)
-  (*| ImgLit of string*)
-  (* String *)
   | StringLit of string
   | Id of string
   | Binop of expr * op * expr
-  (*| Assign of string * expr*)
-  (* function call *)
   | Call of string * expr list
   | NoExpr
   | Brighten of string * expr
@@ -43,7 +35,6 @@ type stmt =
   | Expr of expr
   | If of expr * stmt * stmt
   | While of expr * stmt
-  (* return *)
   | Return of expr
   | Local of typ * string * expr
   | Infer of string * expr
@@ -88,7 +79,6 @@ let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
-  (*| ImgLit(l) -> "Image: " ^ l*)
   | StringLit(l) -> "String: " ^ l
   | Id(s) -> s
   | Binop(e1, o, e2) ->

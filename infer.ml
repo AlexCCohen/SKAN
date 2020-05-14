@@ -164,7 +164,6 @@ let resolve functions =
   in
 
   (* Create map: function_name -> {map: var -> { type } } *)
-  (* THIS IS WHAT WE WANT TO RETURN *)
   let symbol_table = List.fold_left get_vars StringMap.empty functions
   in
 

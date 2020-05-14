@@ -53,12 +53,6 @@ let translate functions =
 
  (* Built-in functions *)
 
-(* let read_image = L.function_type (L.pointer_type i32_t) [| L.pointer_type i8_t |] in
-let read_image_func = L.declare_function "read_image" read_image the_module in
-
-let write_image = L.function_type i32_t [| L.pointer_type i32_t; i32_t; i32_t; L.pointer_type i8_t |] in
-let write_image_func = L.declare_function "write_image" write_image the_module in *)(* replace this with print big to make sure linking is correct*)
-
   let printf_t : L.lltype =
     L.var_arg_function_type i32_t [| L.pointer_type i8_t |] in
   let printf_func : L.llvalue =
@@ -77,13 +71,6 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
     
   let print_str_func : L.llvalue =
     L.declare_function "print_str" print_str the_module in
-
-  (*let initImg_t : L.lltype =
-    L.function_type (L.void_type context)
-    [| L.pointer_type struct_img_t |] in
-
-  let initImg : L.llvalue =
-    L.declare_function "initImg" initImg_t the_module in*)
   
   let emptyInitImg_t : L.lltype =
     L.function_type (struct_img_t)
@@ -126,34 +113,18 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
       
   let threshold_func : L.llvalue = 
     L.declare_function "threshold" threshold_t the_module in
-  
-  let gaussian_t : L.lltype = 
-    L.function_type (struct_img_t)
-    [| struct_img_t; i32_t |] in
         
   let gaussian_func : L.llvalue = 
-    L.declare_function "gaussian" gaussian_t the_module in
-  
-  let color_t : L.lltype = 
-    L.function_type (struct_img_t)
-    [| struct_img_t; i32_t |] in
+    L.declare_function "gaussian" threshold_t the_module in
           
   let color_func : L.llvalue = 
-    L.declare_function "color" color_t the_module in
-
-  let sharpen_t : L.lltype = 
-    L.function_type (struct_img_t)
-    [| struct_img_t; i32_t |] in
+    L.declare_function "color" threshold_t the_module in
           
   let sharpen_func : L.llvalue = 
-    L.declare_function "sharpen" sharpen_t the_module in
-
-  let median_t : L.lltype = 
-    L.function_type (struct_img_t)
-    [| struct_img_t; i32_t |] in
+    L.declare_function "sharpen" threshold_t the_module in
           
   let median_func : L.llvalue = 
-    L.declare_function "median" median_t the_module in
+    L.declare_function "median" threshold_t the_module in
   
   let cleanup_t : L.lltype =
     L.function_type i32_t
@@ -165,42 +136,11 @@ let write_image_func = L.declare_function "write_image" write_image the_module i
   let display_func : L.llvalue =
     L.declare_function "display" cleanup_t the_module in
   
-  let brighten_t : L.lltype =
-    L.function_type (struct_img_t)
-    [| struct_img_t; i32_t |] in
-  
   let brighten_func : L.llvalue =
-    L.declare_function "brighten" brighten_t the_module in
-
-  let copy_t : L.lltype =
-    L.function_type (struct_img_t)
-    [| struct_img_t |] in
+    L.declare_function "brighten" threshold_t the_module in
 
   let copy_func : L.llvalue =
-    L.declare_function "copy" copy_t the_module in
-
-(*  SECTION 4b: Calling C's print function 
-let print_func : L.llvalue =
-  L.declare_function "printf" print_t the_module
-  in let print_by_type ltyp e' builder mat_dim_map img_dim_map m_row m_col =
-    (match ltyp with
-        "i32" ->
-          ((L.build_call print_func [| int_format_str builder ; e' |]
-          "printf" builder), (mat_dim_map, img_dim_map))
-      | "i1" -> (* prints 1 for true, 0 for false *)
-          ((L.build_call print_func [| int_format_str builder ; e' |]
-          "printf" builder), (mat_dim_map, img_dim_map))
-      | "double" ->
-          ((L.build_call print_func [| double_format_str builder ; e' |]
-          "printf" builder), (mat_dim_map, img_dim_map))
-      | "i8*" ->  (* string *)
-          ((L.build_call print_func [| str_format_str builder ; e' |]
-          "printf" builder), (mat_dim_map, img_dim_map))
-      | "void" -> raise (Failure ("Can't print void type"))
-      | _ ->  (* must be matrix *)
-          ((L.build_call print_func [| (mat_format_str builder m_row m_col) ; e' |]
-          "printf" builder), (mat_dim_map, img_dim_map)))
-  in*)
+    L.declare_function "copy" sobel_t the_module in
 
 
   (* Define each function (arguments and return type) so we can

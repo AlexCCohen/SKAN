@@ -6,12 +6,10 @@ type sexpr = typ * sx
 and sx =
     SLiteral of int
   | SBoolLit of bool
-  (*| SImgLit of string*)
   | SStringLit of string
   | SId of string
   | SBinop of sexpr * op * sexpr
   (*| SAssign of string * sexpr*)
-  (* call *)
   | SCall of string * sexpr list
   | SNoExpr
   | SBrighten of string * sexpr
@@ -21,7 +19,6 @@ type sstmt =
   | SExpr of sexpr
   | SIf of sexpr * sstmt * sstmt
   | SWhile of sexpr * sstmt
-  (* return *)
   | SReturn of sexpr
   | SLocal of typ * string * sexpr
   | SAssign of typ * string * sexpr
@@ -37,14 +34,12 @@ type sfunc_def = {
 type sprogram = sfunc_def list
 
 
-
 (* Pretty-printing functions *)
 let rec string_of_sexpr (t, e) =
   "(" ^ string_of_typ t ^ " : " ^ (match e with
         SLiteral(l) -> string_of_int l
       | SBoolLit(true) -> "true"
       | SBoolLit(false) -> "false"
-      (*| SImgLit(l) -> "Image: " ^ l*)
       | SStringLit(l) -> "String: " ^ l
       | SId(s) -> s
       | SBinop(e1, o, e2) ->

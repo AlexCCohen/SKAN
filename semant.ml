@@ -64,7 +64,6 @@ let check functions =
     (* Raise an exception if the given rvalue type cannot be assigned to
        the given lvalue type *)
     let check_assign lvaluet rvaluet err =
-      (*if lvaluet = rvaluet then lvaluet else raise (Failure err)*)
       match (lvaluet, rvaluet) with
         (Int, Int)-> lvaluet
       | (Bool, Bool) -> lvaluet
@@ -76,8 +75,10 @@ let check functions =
     in
 
     (* Build local symbol table of variables for this function *)
-    let formals = List.fold_left (fun m (ty, name) -> if ty != AnyType then StringMap.add name ty m else raise (Failure "Unused function"))
-        StringMap.empty func.formals
+    let formals =
+      List.fold_left
+      (fun m (ty, name) -> if ty != AnyType then StringMap.add name ty m else raise (Failure "Unused function"))
+      StringMap.empty func.formals
     in
 
     (* Return a variable from our local symbol table *)
@@ -189,7 +190,7 @@ let check functions =
                     Int -> (Int, SLiteral 0)
                   | Bool -> (Bool, SBoolLit true)
                   | String -> (String, SStringLit "")
-                  | Img -> (Img, SNoExpr) (***** FIX *****)
+                  | Img -> (Img, SNoExpr)
                   | Void -> (Void, SNoExpr)
                   | AnyType -> (AnyType, SNoExpr)) in
                   (SLocal (typ, varname, init_noexpr typ), new_table)

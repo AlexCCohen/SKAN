@@ -22,14 +22,6 @@ extern "C" void print_str(char x[]) {
     cout << "str: " << x << endl;
 }
 
-extern "C" void initImg(struct Img *img) {
-    cout << "Image inited" << endl;
-    /*Mat curr;
-    curr = imread("test_fish.png", CV_LOAD_IMAGE_COLOR);
-    namedWindow( "Display window", WINDOW_AUTOSIZE );
-    imshow( "Display window", curr);
-    waitKey(0);*/
-}
 
 extern "C" struct Img* emptyInitImg() {
     cout << "EmptyImg inited" << endl;
