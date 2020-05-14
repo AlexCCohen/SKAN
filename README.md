@@ -29,11 +29,17 @@ To compile and run {BASE}.sk:
 
 ### Testing
 
-To run the tests:
+To run the test suite:
 
 ```python tester.py```
 
 `tester.py` is an automated tester that runs all of the programs in `tests`. Some of the programs are supposed to fail/throw errors and some are supposed to run successfully. The script checks each program accordingly.
+
+There also tests for the different SKAN modules:
+
+- ```parser_test.ml``` tests the scanner and parser
+- ```infer_test.ml``` tests the type inference
+- ```semantic_test.ml``` tests the semantic checker
 
 ### Demos
 
