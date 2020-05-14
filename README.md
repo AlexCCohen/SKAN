@@ -27,6 +27,14 @@ To compile and run {BASE}.sk:
 ```./{BASE}.out```
 
 
-### Run Tester
+### Testing
+
+To run the tests:
 
 ```python tester.py```
+
+`tester.py` is an automated tester that runs all of the programs in `tests`. Some of the programs are supposed to fail/throw errors and some are supposed to run successfully. The script checks each program accordingly.
+
+### Demos
+
+There are two demos in the `demos` folder.
