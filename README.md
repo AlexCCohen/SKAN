@@ -31,7 +31,7 @@ To compile and run {BASE}.sk:
 
 To run the test suite:
 
-```python tester.py```
+```python2 tester.py```
 
 `tester.py` is an automated tester that runs all of the programs in `tests`. Some of the programs are supposed to fail/throw errors and some are supposed to run successfully. The script checks each program accordingly.
 
